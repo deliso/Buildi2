@@ -1,23 +1,23 @@
 .login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  gap: 30px;
-  font-size: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	gap: 30px;
+	font-size: 30px;
 }
 
 .navBar {
-  position: fixed;
-  left: 20%;
-  bottom: 5px;
+	position: fixed;
+	left: 20%;
+	bottom: 5px;
 }
 
 /* CLIENT CREATE */
 form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
 }
