@@ -13,7 +13,8 @@ const authMiddleware = async (
 		req.body.user = user;
 		next();
 	} catch (e) {
-		res.sendStatus(404);
+		res.status(404);
+		res.end();
 	}
 };
 

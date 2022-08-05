@@ -37,10 +37,11 @@ router.post('/RFIrespond', projectController.respondRFI);
 
 // return all projects
 router.get('/projects', projectController.returnProjects);
+// router.get('/projects', () => console.log('router'));
 // return projects specific to a user
 router.get('/userprojects', projectController.returnProjectsById);
 // return specific project for details page
-router.get('/oneProject', projectController.returnOneProject);
+router.get('/oneProject/', projectController.returnOneProject);
 // USER ROUTES
 // leave review
 router.post('/review', projectController.createReview);

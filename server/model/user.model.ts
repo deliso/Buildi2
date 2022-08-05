@@ -1,9 +1,10 @@
 // const mongoose = require("./index");
 import mongoose from 'mongoose';
+import { Review, UserT } from '../../types/userTypes';
 
 const { Schema } = mongoose;
 
-const reviewSchema = new Schema({
+const reviewSchema = new Schema<Review>({
 	rating: Number,
 	review: String,
 	creatorFirstName: String,
@@ -11,7 +12,7 @@ const reviewSchema = new Schema({
 	creatorPic: String,
 });
 
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema<UserT>({
 	profilePic: String,
 	email: String,
 	password: String,

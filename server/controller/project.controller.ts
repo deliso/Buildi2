@@ -4,14 +4,15 @@ import { Request, Response } from 'express';
 import Project from '../model/project.model';
 // import session from 'express-session';
 import User from '../model/user.model';
+import { Review, UserT } from '../../types/userTypes';
+import { Bid, RFI, ProjectT } from '../../types/projectTypes';
 
 const bcrypt = require('bcrypt');
 
 // Creates a new project
 const postProject = async (req: Request, res: Response) => {
 	try {
-		console.log(req.body);
-		await Project.create({
+		await Project<ProjectT>.create({
 			projectImage: req.file?.path,
 			name: req.body.name,
 			description: req.body.description,
@@ -25,19 +26,18 @@ const postProject = async (req: Request, res: Response) => {
 		res.send('success!');
 	} catch (e) {
 		res.status(504);
-		console.log(e);
 	}
 };
 // Return lists of all projects
 const returnProjects = async (req: Request, res: Response) => {
 	try {
-		const projects = await Project.find();
-		return res.status(200).send(projects);
+		console.log('in');
+		const projects: ProjectT[] = await Project.find();
+		console.log(projects);
+		res.status(200).send(projects);
 	} catch (e) {
-		console.log(e);
 		res.status(505).send(e);
 	}
-	return 'Project not found';
 };
 
 // Return list of projects specific to a user
@@ -45,17 +45,15 @@ const returnProjectsById = async (req: Request, res: Response) => {
 	try {
 		console.log('param id:', req.query.id);
 	} catch (e) {
-		console.log(e);
 		res.status(505).send(e);
 	}
 };
 
 const returnOneProject = async (req: Request, res: Response) => {
 	try {
-		const project = await Project.findById(req.query.id);
+		const project: ProjectT = await Project.findById(req.query.id);
 		return res.status(200).send(project);
 	} catch (e) {
-		console.log(e);
 		res.status(505).send(e);
 	}
 	return 'Project not found';
@@ -64,15 +62,15 @@ const returnOneProject = async (req: Request, res: Response) => {
 // BIDS
 const addBid = async (req: Request, res: Response) => {
 	try {
-		const projectToUpdate = await Project.findByIdAndUpdate(
-			req.body.id,
+		const projectToUpdate: Bid = await Project.findByIdAndUpdate(
+			req.body?.id,
 			{
 				$push: {
 					bids: {
-						bidPrice: req.body.bidPrice,
-						creatorId: req.body.creatorId,
-						creatorName: req.body.creatorName,
-						creatorPic: req.body.creatorPic,
+						bidPrice: req.body?.bidPrice,
+						creatorId: req.body?.creatorId,
+						creatorName: req.body?.creatorName,
+						creatorPic: req.body?.creatorPic,
 						awarded: false,
 					},
 				},
@@ -81,14 +79,13 @@ const addBid = async (req: Request, res: Response) => {
 		);
 		res.status(200).send(projectToUpdate);
 	} catch (e) {
-		console.log(e);
 		res.status(505).send(e);
 	}
 };
 
 const changeBid = async (req: Request, res: Response) => {
 	try {
-		const projectToUpdate = await Project.findOneAndUpdate(
+		const projectToUpdate: ProjectT = await Project.findOneAndUpdate(
 			{ _id: req.body.id, 'bids.creatorId': req.body.creatorId },
 			{
 				$set: {
@@ -99,15 +96,13 @@ const changeBid = async (req: Request, res: Response) => {
 		);
 		res.status(200).send(projectToUpdate);
 	} catch (e) {
-		console.log(e);
 		res.status(505).send(e);
 	}
 };
 // will update awarded bid status and also set project life cycle to awarded
 const awardBid = async (req: Request, res: Response) => {
-	console.log('here');
 	try {
-		let projectToUpdate = await Project.findOneAndUpdate(
+		let projectToUpdate: ProjectT = await Project.findOneAndUpdate(
 			{ _id: req.body.id, 'bids.creatorId': req.body.creatorId },
 			{
 				$set: {
@@ -128,7 +123,6 @@ const awardBid = async (req: Request, res: Response) => {
 		);
 		res.status(200).send(projectToUpdate);
 	} catch (e) {
-		console.log(e);
 		res.status(505).send(e);
 	}
 };
@@ -136,7 +130,7 @@ const awardBid = async (req: Request, res: Response) => {
 // RFIS
 const addRFI = async (req: Request, res: Response) => {
 	try {
-		const projectToUpdate = await Project.findByIdAndUpdate(
+		const projectToUpdate: ProjectT = await Project.findByIdAndUpdate(
 			req.body.id,
 			{
 				$push: {
@@ -152,15 +146,13 @@ const addRFI = async (req: Request, res: Response) => {
 		);
 		res.status(200).send(projectToUpdate);
 	} catch (e) {
-		console.log(e);
 		res.status(505).send(e);
 	}
 };
 
 const respondRFI = async (req: Request, res: Response) => {
-	console.log('got');
 	try {
-		const projectToUpdate = await Project.findOneAndUpdate(
+		const projectToUpdate: ProjectT = await Project.findOneAndUpdate(
 			{ _id: req.body.id, 'rfis._id': req.body.rfiId },
 			{
 				$set: {
@@ -171,17 +163,16 @@ const respondRFI = async (req: Request, res: Response) => {
 		);
 		res.status(200).send(projectToUpdate);
 	} catch (e) {
-		console.log(e);
 		res.status(505).send(e);
 	}
 };
 
 // USER FUNCTIONS
-
+// <any, any, UserT>
 const createReview = async (req: Request, res: Response) => {
 	try {
 		// first leave the review
-		const userToLeaveReviewOn = await User.findByIdAndUpdate(
+		const userToLeaveReviewOn: UserT | null = await User.findByIdAndUpdate(
 			req.body.bidderId,
 			{
 				$push: {
@@ -207,21 +198,16 @@ const createReview = async (req: Request, res: Response) => {
 		// 	{ new: true }
 		// );
 
-		console.log(req.body);
-
 		res.status(200).send(userToLeaveReviewOn);
 	} catch (e) {
-		console.log(e);
 		res.status(505).send(e);
 	}
 };
 
 const createUser = async (req: Request, res: Response) => {
-	console.log(req.body);
 	const { email, password } = req.body;
-	const user = await User.findOne({ email });
+	const user: UserT | null = await User.findOne({ email });
 	if (user) {
-		console.log('user already exists! Please register as a new user.');
 		return res
 			.status(409)
 			.send({ error: '409', message: 'User already exists =(' });
@@ -236,9 +222,9 @@ const createUser = async (req: Request, res: Response) => {
 			reviews: [],
 			password: hash,
 		});
-		console.log(newUser);
+
 		const user1 = await newUser.save();
-		console.log(user1);
+
 		req.session.id = user1.id;
 		res.status(201).send(user1);
 	} catch (error) {
@@ -251,13 +237,12 @@ const createUser = async (req: Request, res: Response) => {
 
 const login = async (req: Request, res: Response) => {
 	try {
-		console.log(req.body);
 		const { email, password } = req.body;
-		const user = await User.findOne({ email });
+		const user: UserT = await User.findOne({ email });
 		const validatedPass = await bcrypt.compare(password, user?.password);
 		if (!validatedPass) throw new Error();
-		req.session.id = user?.id;
-		console.log('logged in!');
+		req.session.id = user!.id;
+
 		res.status(200).send(user);
 	} catch (error) {
 		res
@@ -298,11 +283,12 @@ const profile = async (req: Request, res: Response) => {
 
 // This version is to obtain profile details of another user, without changing the authorized user (to view someone elses profile)
 // UPDATE LATER SO YOU DO NOT SEND BACK ANY SENSITIVE INFO (IF YOU HAVE TIME)
-const getOtherProfile = async (req: Request, res: Response) => {
+const getOtherProfile = async (
+	req: Request<any, any, UserT>,
+	res: Response
+) => {
 	try {
-		console.log('made it');
-		console.log(req.query.id);
-		const otherUser = await User.findById(req.query.id);
+		const otherUser: UserT | null = await User.findById(req.query.id);
 		res.status(200).send(otherUser);
 	} catch (error) {
 		res.status(404).send({ error, message: 'User not found' });
@@ -310,7 +296,6 @@ const getOtherProfile = async (req: Request, res: Response) => {
 };
 
 const logout = (req: Request, res: Response) => {
-	console.log('entered logout controller function');
 	req.session.destroy((error) => {
 		if (error) {
 			res

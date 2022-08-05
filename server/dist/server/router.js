@@ -34,8 +34,8 @@ router.post('/awardbid', project_controller_1.default.awardBid);
 router.post('/RFI', project_controller_1.default.addRFI);
 router.post('/RFIrespond', project_controller_1.default.respondRFI);
 // return all projects
-router.get('/projects', project_controller_1.default.returnProjects);
-// router.get('/projects', () => console.log('router'));
+// router.get('/projects', projectController.returnProjects);
+router.get('/projects', () => console.log('router'));
 // return projects specific to a user
 router.get('/userprojects', project_controller_1.default.returnProjectsById);
 // return specific project for details page
