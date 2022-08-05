@@ -8,7 +8,7 @@ const PORT = 3000;
 const cors = require('cors');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const router = require('./router');
+import router from './router';
 // Set Up
 const app = express();
 const corsConfig = {

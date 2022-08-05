@@ -12,7 +12,7 @@ const PORT = 3000;
 const cors = require('cors');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const router = require('./router');
+const router_1 = __importDefault(require("./router"));
 // Set Up
 const app = (0, express_1.default)();
 const corsConfig = {
@@ -41,7 +41,7 @@ app.use(session({
         secure: false,
     },
 }));
-app.use(router);
+app.use(router_1.default);
 app.listen(PORT, () => {
     console.log(`app listening at http//localhost:${PORT}`);
 });
