@@ -1,8 +1,10 @@
 // REQUIRES
-import projectController from './controller/project.controller';
-const router = require('express').Router();
 // multer is for incoming form data
 import multer from 'multer';
+
+import projectController from './controller/project.controller';
+
+const router = require('express').Router();
 // const multer = require("multer");
 const authMiddleware = require('./middlewares/auth');
 // SETUP / CONFIG

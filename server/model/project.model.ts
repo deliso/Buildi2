@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const bidSchema = new Schema({
 	bidPrice: Number,
@@ -31,4 +31,5 @@ const projectSchema = new Schema({
 	rfis: [RFISchema],
 });
 
-module.exports.Project = mongoose.model('project', projectSchema);
+export default mongoose.model('project', projectSchema);
+// module.exports.Project = mongoose.model('project', projectSchema);

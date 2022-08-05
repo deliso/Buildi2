@@ -1,20 +1,21 @@
-'use strict';
+// 'use strict';
 
 import { Request, Response } from 'express';
-import session from 'express-session';
+import Project from '../model/project.model';
+// import session from 'express-session';
+import User from '../model/user.model';
+
 const bcrypt = require('bcrypt');
-const data = require('../model/project.model');
-const User = require('../model/user.model');
 
 // Creates a new project
 const postProject = async (req: Request, res: Response) => {
 	try {
 		console.log(req.body);
-		await data.Project.create({
+		await Project.create({
 			projectImage: req.file?.path,
 			name: req.body.name,
 			description: req.body.description,
-			userId: req.body._id,
+			userId: req.body.id,
 			specialties: req.body.specialties.split(','),
 			lifeCycle: 'open',
 			bids: [],
@@ -30,12 +31,13 @@ const postProject = async (req: Request, res: Response) => {
 // Return lists of all projects
 const returnProjects = async (req: Request, res: Response) => {
 	try {
-		const projects = await data.Project.find();
+		const projects = await Project.find();
 		return res.status(200).send(projects);
 	} catch (e) {
 		console.log(e);
 		res.status(505).send(e);
 	}
+	return 'Project not found';
 };
 
 // Return list of projects specific to a user
@@ -50,19 +52,20 @@ const returnProjectsById = async (req: Request, res: Response) => {
 
 const returnOneProject = async (req: Request, res: Response) => {
 	try {
-		const project = await data.Project.findById(req.query.id);
+		const project = await Project.findById(req.query.id);
 		return res.status(200).send(project);
 	} catch (e) {
 		console.log(e);
 		res.status(505).send(e);
 	}
+	return 'Project not found';
 };
 
 // BIDS
 const addBid = async (req: Request, res: Response) => {
 	try {
-		const projectToUpdate = await data.Project.findByIdAndUpdate(
-			req.body._id,
+		const projectToUpdate = await Project.findByIdAndUpdate(
+			req.body.id,
 			{
 				$push: {
 					bids: {
@@ -85,8 +88,8 @@ const addBid = async (req: Request, res: Response) => {
 
 const changeBid = async (req: Request, res: Response) => {
 	try {
-		const projectToUpdate = await data.Project.findOneAndUpdate(
-			{ _id: req.body._id, 'bids.creatorId': req.body.creatorId },
+		const projectToUpdate = await Project.findOneAndUpdate(
+			{ _id: req.body.id, 'bids.creatorId': req.body.creatorId },
 			{
 				$set: {
 					'bids.$.bidPrice': req.body.bidPrice,
@@ -104,8 +107,8 @@ const changeBid = async (req: Request, res: Response) => {
 const awardBid = async (req: Request, res: Response) => {
 	console.log('here');
 	try {
-		let projectToUpdate = await data.Project.findOneAndUpdate(
-			{ _id: req.body._id, 'bids.creatorId': req.body.creatorId },
+		let projectToUpdate = await Project.findOneAndUpdate(
+			{ _id: req.body.id, 'bids.creatorId': req.body.creatorId },
 			{
 				$set: {
 					'bids.$.awarded': true,
@@ -114,8 +117,8 @@ const awardBid = async (req: Request, res: Response) => {
 			{ new: true }
 		);
 
-		projectToUpdate = await data.Project.findOneAndUpdate(
-			{ _id: req.body._id },
+		projectToUpdate = await Project.findOneAndUpdate(
+			{ _id: req.body.id },
 			{
 				$set: {
 					lifeCycle: 'awarded',
@@ -133,8 +136,8 @@ const awardBid = async (req: Request, res: Response) => {
 // RFIS
 const addRFI = async (req: Request, res: Response) => {
 	try {
-		const projectToUpdate = await data.Project.findByIdAndUpdate(
-			req.body._id,
+		const projectToUpdate = await Project.findByIdAndUpdate(
+			req.body.id,
 			{
 				$push: {
 					rfis: {
@@ -157,8 +160,8 @@ const addRFI = async (req: Request, res: Response) => {
 const respondRFI = async (req: Request, res: Response) => {
 	console.log('got');
 	try {
-		const projectToUpdate = await data.Project.findOneAndUpdate(
-			{ _id: req.body._id, 'rfis._id': req.body.rfiId },
+		const projectToUpdate = await Project.findOneAndUpdate(
+			{ _id: req.body.id, 'rfis._id': req.body.rfiId },
 			{
 				$set: {
 					'rfis.$.response': req.body.response,
@@ -194,15 +197,15 @@ const createReview = async (req: Request, res: Response) => {
 			{ new: true }
 		);
 		// next change the project status to closed
-		const projectToClose = await data.Project.findOneAndUpdate(
-			{ _id: req.body.projectId },
-			{
-				$set: {
-					lifeCycle: 'closed',
-				},
-			},
-			{ new: true }
-		);
+		// const projectToClose = await Project.findOneAndUpdate(
+		// 	{ _id: req.body.projectId },
+		// 	{
+		// 		$set: {
+		// 			lifeCycle: 'closed',
+		// 		},
+		// 	},
+		// 	{ new: true }
+		// );
 
 		console.log(req.body);
 
@@ -234,15 +237,16 @@ const createUser = async (req: Request, res: Response) => {
 			password: hash,
 		});
 		console.log(newUser);
-		const user = await newUser.save();
-		console.log(user);
-		req.session.id = user._id;
-		res.status(201).send(user);
+		const user1 = await newUser.save();
+		console.log(user1);
+		req.session.id = user1.id;
+		res.status(201).send(user1);
 	} catch (error) {
 		res
 			.status(400)
 			.send({ error, message: 'Error, could not create a new user =(' });
 	}
+	return 'Error, could not create a new user =(';
 };
 
 const login = async (req: Request, res: Response) => {
@@ -250,9 +254,9 @@ const login = async (req: Request, res: Response) => {
 		console.log(req.body);
 		const { email, password } = req.body;
 		const user = await User.findOne({ email });
-		const validatedPass = await bcrypt.compare(password, user.password);
+		const validatedPass = await bcrypt.compare(password, user?.password);
 		if (!validatedPass) throw new Error();
-		req.session.id = user.id;
+		req.session.id = user?.id;
 		console.log('logged in!');
 		res.status(200).send(user);
 	} catch (error) {

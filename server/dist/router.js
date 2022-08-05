@@ -4,10 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // REQUIRES
-const project_controller_1 = __importDefault(require("./controller/project.controller"));
-const router = require('express').Router();
 // multer is for incoming form data
 const multer_1 = __importDefault(require("multer"));
+const project_controller_1 = __importDefault(require("./controller/project.controller"));
+const router = require('express').Router();
 // const multer = require("multer");
 const authMiddleware = require('./middlewares/auth');
 // SETUP / CONFIG

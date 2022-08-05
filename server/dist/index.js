@@ -7,12 +7,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Require
 const express_1 = __importDefault(require("express"));
 // import mongoose from 'mongoose';
+const router_1 = __importDefault(require("./router"));
 const PORT = 3000;
 // const express = require("express");
 const cors = require('cors');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const router_1 = __importDefault(require("./router"));
 // Set Up
 const app = (0, express_1.default)();
 const corsConfig = {
@@ -42,6 +42,4 @@ app.use(session({
     },
 }));
 app.use(router_1.default);
-app.listen(PORT, () => {
-    console.log(`app listening at http//localhost:${PORT}`);
-});
+app.listen(PORT);

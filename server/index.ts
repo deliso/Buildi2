@@ -2,13 +2,13 @@
 // Require
 import express from 'express';
 // import mongoose from 'mongoose';
+import router from './router';
 
 const PORT = 3000;
 // const express = require("express");
 const cors = require('cors');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-import router from './router';
 // Set Up
 const app = express();
 const corsConfig = {
@@ -43,6 +43,4 @@ app.use(
 
 app.use(router);
 
-app.listen(PORT, () => {
-	console.log(`app listening at http//localhost:${PORT}`);
-});
+app.listen(PORT);

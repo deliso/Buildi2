@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // const mongoose = require("./index");
 const mongoose_1 = __importDefault(require("mongoose"));
-const Schema = mongoose_1.default.Schema;
+const { Schema } = mongoose_1.default;
 const reviewSchema = new Schema({
     rating: Number,
     review: String,
@@ -24,4 +24,5 @@ const userSchema = new mongoose_1.default.Schema({
     specialties: [String],
     reviews: [reviewSchema],
 });
-module.exports = mongoose_1.default.model('User', userSchema);
+exports.default = mongoose_1.default.model('User', userSchema);
+// module.exports = mongoose.model('User', userSchema);

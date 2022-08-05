@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 mongoose.connect('mongodb://localhost:27017/solo');
 
-module.exports = mongoose;
+export default mongoose;

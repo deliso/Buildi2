@@ -1,4 +1,5 @@
-'use strict';
+"use strict";
+// 'use strict';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,20 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const project_model_1 = __importDefault(require("../model/project.model"));
+// import session from 'express-session';
+const user_model_1 = __importDefault(require("../model/user.model"));
 const bcrypt = require('bcrypt');
-const data = require('../model/project.model');
-const User = require('../model/user.model');
 // Creates a new project
 const postProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         console.log(req.body);
-        yield data.Project.create({
+        yield project_model_1.default.create({
             projectImage: (_a = req.file) === null || _a === void 0 ? void 0 : _a.path,
             name: req.body.name,
             description: req.body.description,
-            userId: req.body._id,
+            userId: req.body.id,
             specialties: req.body.specialties.split(','),
             lifeCycle: 'open',
             bids: [],
@@ -38,13 +43,14 @@ const postProject = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 // Return lists of all projects
 const returnProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const projects = yield data.Project.find();
+        const projects = yield project_model_1.default.find();
         return res.status(200).send(projects);
     }
     catch (e) {
         console.log(e);
         res.status(505).send(e);
     }
+    return 'Project not found';
 });
 // Return list of projects specific to a user
 const returnProjectsById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -58,18 +64,19 @@ const returnProjectsById = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 const returnOneProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const project = yield data.Project.findById(req.query.id);
+        const project = yield project_model_1.default.findById(req.query.id);
         return res.status(200).send(project);
     }
     catch (e) {
         console.log(e);
         res.status(505).send(e);
     }
+    return 'Project not found';
 });
 // BIDS
 const addBid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const projectToUpdate = yield data.Project.findByIdAndUpdate(req.body._id, {
+        const projectToUpdate = yield project_model_1.default.findByIdAndUpdate(req.body.id, {
             $push: {
                 bids: {
                     bidPrice: req.body.bidPrice,
@@ -89,7 +96,7 @@ const addBid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const changeBid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const projectToUpdate = yield data.Project.findOneAndUpdate({ _id: req.body._id, 'bids.creatorId': req.body.creatorId }, {
+        const projectToUpdate = yield project_model_1.default.findOneAndUpdate({ _id: req.body.id, 'bids.creatorId': req.body.creatorId }, {
             $set: {
                 'bids.$.bidPrice': req.body.bidPrice,
             },
@@ -105,12 +112,12 @@ const changeBid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const awardBid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('here');
     try {
-        let projectToUpdate = yield data.Project.findOneAndUpdate({ _id: req.body._id, 'bids.creatorId': req.body.creatorId }, {
+        let projectToUpdate = yield project_model_1.default.findOneAndUpdate({ _id: req.body.id, 'bids.creatorId': req.body.creatorId }, {
             $set: {
                 'bids.$.awarded': true,
             },
         }, { new: true });
-        projectToUpdate = yield data.Project.findOneAndUpdate({ _id: req.body._id }, {
+        projectToUpdate = yield project_model_1.default.findOneAndUpdate({ _id: req.body.id }, {
             $set: {
                 lifeCycle: 'awarded',
             },
@@ -125,7 +132,7 @@ const awardBid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 // RFIS
 const addRFI = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const projectToUpdate = yield data.Project.findByIdAndUpdate(req.body._id, {
+        const projectToUpdate = yield project_model_1.default.findByIdAndUpdate(req.body.id, {
             $push: {
                 rfis: {
                     question: req.body.question,
@@ -145,7 +152,7 @@ const addRFI = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const respondRFI = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('got');
     try {
-        const projectToUpdate = yield data.Project.findOneAndUpdate({ _id: req.body._id, 'rfis._id': req.body.rfiId }, {
+        const projectToUpdate = yield project_model_1.default.findOneAndUpdate({ _id: req.body.id, 'rfis._id': req.body.rfiId }, {
             $set: {
                 'rfis.$.response': req.body.response,
             },
@@ -161,7 +168,7 @@ const respondRFI = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 const createReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // first leave the review
-        const userToLeaveReviewOn = yield User.findByIdAndUpdate(req.body.bidderId, {
+        const userToLeaveReviewOn = yield user_model_1.default.findByIdAndUpdate(req.body.bidderId, {
             $push: {
                 reviews: {
                     rating: req.body.rating,
@@ -173,11 +180,15 @@ const createReview = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             },
         }, { new: true });
         // next change the project status to closed
-        const projectToClose = yield data.Project.findOneAndUpdate({ _id: req.body.projectId }, {
-            $set: {
-                lifeCycle: 'closed',
-            },
-        }, { new: true });
+        // const projectToClose = await Project.findOneAndUpdate(
+        // 	{ _id: req.body.projectId },
+        // 	{
+        // 		$set: {
+        // 			lifeCycle: 'closed',
+        // 		},
+        // 	},
+        // 	{ new: true }
+        // );
         console.log(req.body);
         res.status(200).send(userToLeaveReviewOn);
     }
@@ -190,7 +201,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     var _b;
     console.log(req.body);
     const { email, password } = req.body;
-    const user = yield User.findOne({ email });
+    const user = yield user_model_1.default.findOne({ email });
     if (user) {
         console.log('user already exists! Please register as a new user.');
         return res
@@ -201,28 +212,29 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (password === '')
             throw new Error();
         const hash = yield bcrypt.hash(password, 10);
-        const newUser = new User(Object.assign(Object.assign({}, req.body), { profilePic: (_b = req.file) === null || _b === void 0 ? void 0 : _b.path, specialties: req.body.specialties.split(','), reviews: [], password: hash }));
+        const newUser = new user_model_1.default(Object.assign(Object.assign({}, req.body), { profilePic: (_b = req.file) === null || _b === void 0 ? void 0 : _b.path, specialties: req.body.specialties.split(','), reviews: [], password: hash }));
         console.log(newUser);
-        const user = yield newUser.save();
-        console.log(user);
-        req.session.id = user._id;
-        res.status(201).send(user);
+        const user1 = yield newUser.save();
+        console.log(user1);
+        req.session.id = user1.id;
+        res.status(201).send(user1);
     }
     catch (error) {
         res
             .status(400)
             .send({ error, message: 'Error, could not create a new user =(' });
     }
+    return 'Error, could not create a new user =(';
 });
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.body);
         const { email, password } = req.body;
-        const user = yield User.findOne({ email });
-        const validatedPass = yield bcrypt.compare(password, user.password);
+        const user = yield user_model_1.default.findOne({ email });
+        const validatedPass = yield bcrypt.compare(password, user === null || user === void 0 ? void 0 : user.password);
         if (!validatedPass)
             throw new Error();
-        req.session.id = user.id;
+        req.session.id = user === null || user === void 0 ? void 0 : user.id;
         console.log('logged in!');
         res.status(200).send(user);
     }
@@ -259,7 +271,7 @@ const getOtherProfile = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         console.log('made it');
         console.log(req.query.id);
-        const otherUser = yield User.findById(req.query.id);
+        const otherUser = yield user_model_1.default.findById(req.query.id);
         res.status(200).send(otherUser);
     }
     catch (error) {
