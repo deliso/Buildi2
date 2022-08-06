@@ -1,5 +1,5 @@
 // const baseURL = "http://localhost:3000";
-const baseURL = 'http://192.168.1.144:3000';
+const baseURL = 'http://localhost:3000';
 
 //used in create project component to add a new project to the Projects database
 export const createProject = async (formData) => {

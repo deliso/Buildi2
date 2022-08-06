@@ -7,9 +7,15 @@ import User from '../model/user.model';
 import { Review, UserT } from '../../types/userTypes';
 import { Bid, RFI, ProjectT } from '../../types/projectTypes';
 
+declare module 'express-session' {
+	export interface SessionData {
+		uid: string;
+	}
+}
+
 const bcrypt = require('bcrypt');
 
-// Creates a new project
+// 1. Creates a new project
 const postProject = async (req: Request, res: Response) => {
 	try {
 		await Project<ProjectT>.create({
@@ -28,19 +34,17 @@ const postProject = async (req: Request, res: Response) => {
 		res.status(504);
 	}
 };
-// Return lists of all projects
+// 2. Return lists of all projects (WORKS)
 const returnProjects = async (req: Request, res: Response) => {
 	try {
-		console.log('in');
 		const projects: ProjectT[] = await Project.find();
-		console.log(projects);
 		res.status(200).send(projects);
 	} catch (e) {
 		res.status(505).send(e);
 	}
 };
 
-// Return list of projects specific to a user
+// 3. Return list of projects specific to a user
 const returnProjectsById = async (req: Request, res: Response) => {
 	try {
 		console.log('param id:', req.query.id);
@@ -59,7 +63,7 @@ const returnOneProject = async (req: Request, res: Response) => {
 	return 'Project not found';
 };
 
-// BIDS
+// 4. BIDS
 const addBid = async (req: Request, res: Response) => {
 	try {
 		const projectToUpdate: Bid = await Project.findByIdAndUpdate(
@@ -83,6 +87,7 @@ const addBid = async (req: Request, res: Response) => {
 	}
 };
 
+// 5. Updates a bid
 const changeBid = async (req: Request, res: Response) => {
 	try {
 		const projectToUpdate: ProjectT = await Project.findOneAndUpdate(
@@ -99,7 +104,7 @@ const changeBid = async (req: Request, res: Response) => {
 		res.status(505).send(e);
 	}
 };
-// will update awarded bid status and also set project life cycle to awarded
+// 6. will update awarded bid status and also set project life cycle to awarded
 const awardBid = async (req: Request, res: Response) => {
 	try {
 		let projectToUpdate: ProjectT = await Project.findOneAndUpdate(
@@ -127,7 +132,7 @@ const awardBid = async (req: Request, res: Response) => {
 	}
 };
 
-// RFIS
+// 7. RFIS
 const addRFI = async (req: Request, res: Response) => {
 	try {
 		const projectToUpdate: ProjectT = await Project.findByIdAndUpdate(
@@ -167,7 +172,7 @@ const respondRFI = async (req: Request, res: Response) => {
 	}
 };
 
-// USER FUNCTIONS
+// 8. USER FUNCTIONS
 // <any, any, UserT>
 const createReview = async (req: Request, res: Response) => {
 	try {
@@ -203,7 +208,7 @@ const createReview = async (req: Request, res: Response) => {
 		res.status(505).send(e);
 	}
 };
-
+// 9. Creates user
 const createUser = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
 	const user: UserT | null = await User.findOne({ email });
@@ -235,22 +240,28 @@ const createUser = async (req: Request, res: Response) => {
 	return 'Error, could not create a new user =(';
 };
 
+//10. Login
 const login = async (req: Request, res: Response) => {
 	try {
+		console.log('login');
 		const { email, password } = req.body;
 		const user: UserT = await User.findOne({ email });
 		const validatedPass = await bcrypt.compare(password, user?.password);
-		if (!validatedPass) throw new Error();
-		req.session.id = user!.id;
+		console.log(validatedPass);
 
+		if (!validatedPass) throw new Error();
+		req.session.uid = user!._id;
+		console.log(req.session.uid);
 		res.status(200).send(user);
 	} catch (error) {
+		console.log(error);
+
 		res
 			.status(401)
 			.send({ error: '401', message: 'Username or password is incorrect' });
 	}
 };
-// This version uses auth middleware for logged in user
+// 11. This version uses auth middleware for logged in user
 const profile = async (req: Request, res: Response) => {
 	try {
 		const {
@@ -282,7 +293,7 @@ const profile = async (req: Request, res: Response) => {
 };
 
 // This version is to obtain profile details of another user, without changing the authorized user (to view someone elses profile)
-// UPDATE LATER SO YOU DO NOT SEND BACK ANY SENSITIVE INFO (IF YOU HAVE TIME)
+// 12. UPDATE LATER SO YOU DO NOT SEND BACK ANY SENSITIVE INFO (IF YOU HAVE TIME)
 const getOtherProfile = async (
 	req: Request<any, any, UserT>,
 	res: Response

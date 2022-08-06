@@ -15,6 +15,6 @@ type UserT = {
   location: string;
   specialties: string[];
   reviews: Review[];
-  id: string;
+  _id: string;
 } | null;
 export { Review, UserT };
