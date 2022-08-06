@@ -43,12 +43,12 @@ const returnProjects = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         console.log('in');
         const projects = yield project_model_1.default.find();
-        return res.status(200).send(projects);
+        console.log(projects);
+        res.status(200).send(projects);
     }
     catch (e) {
         res.status(505).send(e);
     }
-    return res.send('yo');
 });
 // Return list of projects specific to a user
 const returnProjectsById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

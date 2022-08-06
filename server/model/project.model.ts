@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { model } from 'mongoose';
 import { Bid, RFI, ProjectT } from '../../types/projectTypes';
 
 const { Schema } = mongoose;
@@ -32,5 +32,8 @@ const projectSchema = new Schema<ProjectT>({
 	rfis: [RFISchema],
 });
 
-export default mongoose.model('project', projectSchema);
+const Project = model('Project', projectSchema);
+export default Project;
+
+// export default mongoose.model('project', projectSchema);
 // module.exports.Project = mongoose.model('project', projectSchema);

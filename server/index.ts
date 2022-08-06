@@ -1,6 +1,8 @@
 // Initial Vars
 // Require
 import express from 'express';
+import { connect } from 'http2';
+import { connectMongoose } from './model';
 // import mongoose from 'mongoose';
 import router from './router';
 
@@ -43,4 +45,9 @@ app.use(
 
 app.use(router);
 
+// Await for mongoose connection
 app.listen(PORT, () => console.log('server live'));
+
+(async () => {
+	await connectMongoose();
+})();
