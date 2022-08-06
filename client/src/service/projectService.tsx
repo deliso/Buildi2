@@ -1,3 +1,5 @@
+import { Review, UserT } from '../../../types/userTypes';
+import { BidT, RFI, ProjectT } from '../../../types/projectTypes';
 // const baseURL = "http://localhost:3000";
 const baseURL = 'http://localhost:3000';
 
@@ -92,7 +94,7 @@ export const editBid = async (projectId: any, bidPrice: any, userId: any) => {
 };
 
 //client awards bid to contractor
-export const awardBidder = async (projectId: any, creatorId: any) => {
+export const awardBidder = async (projectId: ProjectT, creatorId: any) => {
 	try {
 		// alert("here");
 		const result = await fetch(baseURL + '/awardbid', {
