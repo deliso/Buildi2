@@ -28,6 +28,7 @@ const postProject = async (req: Request, res: Response) => {
 			bids: [],
 			rfis: [],
 		});
+		console.log(req.body.id);
 		res.status(202);
 		res.send('success!');
 	} catch (e) {
@@ -37,6 +38,7 @@ const postProject = async (req: Request, res: Response) => {
 // 2. Return lists of all projects (WORKS)
 const returnProjects = async (req: Request, res: Response) => {
 	try {
+		console.log('getting projects...');
 		const projects: ProjectT[] = await Project.find();
 		res.status(200).send(projects);
 	} catch (e) {
