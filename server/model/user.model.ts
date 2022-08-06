@@ -1,5 +1,5 @@
 // const mongoose = require("./index");
-import mongoose from 'mongoose';
+import mongoose, { model } from 'mongoose';
 import { Review, UserT } from '../../types/userTypes';
 
 const { Schema } = mongoose;
@@ -24,5 +24,6 @@ const userSchema = new mongoose.Schema<UserT>({
 	reviews: [reviewSchema],
 });
 
-export default mongoose.model('User', userSchema);
+const User = model('User', userSchema);
+export default User;
 // module.exports = mongoose.model('User', userSchema);

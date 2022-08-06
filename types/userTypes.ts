@@ -16,5 +16,5 @@ type UserT = {
   specialties: string[];
   reviews: Review[];
   _id: string;
-} | null;
+};
 export { Review, UserT };

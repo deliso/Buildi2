@@ -2,8 +2,8 @@
 
 import { Request, Response } from 'express';
 import Project from '../model/project.model';
-// import session from 'express-session';
 import User from '../model/user.model';
+// import session from 'express-session';
 import { Review, UserT } from '../../types/userTypes';
 import { Bid, RFI, ProjectT } from '../../types/projectTypes';
 
@@ -211,7 +211,9 @@ const createReview = async (req: Request, res: Response) => {
 // 9. Creates user
 const createUser = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
+	console.log(email);
 	const user: UserT | null = await User.findOne({ email });
+	console.log(user);
 	if (user) {
 		return res
 			.status(409)
@@ -245,13 +247,11 @@ const login = async (req: Request, res: Response) => {
 	try {
 		console.log('login');
 		const { email, password } = req.body;
-		const user: UserT = await User.findOne({ email });
+		const user: UserT | null = await User.findOne({ email });
 		const validatedPass = await bcrypt.compare(password, user?.password);
-		console.log(validatedPass);
 
 		if (!validatedPass) throw new Error();
 		req.session.uid = user!._id;
-		console.log(req.session.uid);
 		res.status(200).send(user);
 	} catch (error) {
 		console.log(error);
@@ -264,29 +264,10 @@ const login = async (req: Request, res: Response) => {
 // 11. This version uses auth middleware for logged in user
 const profile = async (req: Request, res: Response) => {
 	try {
-		const {
-			_id,
-			profilePic,
-			firstName,
-			lastName,
-			userType,
-			location,
-			email,
-			specialties,
-			reviews,
-		} = req.body.user;
-		const user = {
-			_id,
-			profilePic,
-			firstName,
-			lastName,
-			userType,
-			location,
-			email,
-			specialties,
-			reviews,
-		};
-		res.status(200).send(user);
+		console.log('body', req.body.user);
+		const user = { ...req.body.user };
+		console.log('user', user);
+		res.status(200).send(user[0]);
 	} catch (error) {
 		res.status(404).send({ error, message: 'User not found' });
 	}
