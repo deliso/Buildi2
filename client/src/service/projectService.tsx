@@ -2,7 +2,7 @@
 const baseURL = 'http://localhost:3000';
 
 //used in create project component to add a new project to the Projects database
-export const createProject = async (formData) => {
+export const createProject = async (formData: any) => {
 	console.log('here');
 	try {
 		const postedProject = await fetch(baseURL + '/create', {
@@ -25,7 +25,7 @@ export const getProjects = async () => {
 };
 
 //retrieve all projects from Projects database
-export const UserProjects = async (id) => {
+export const UserProjects = async (id: any) => {
 	try {
 		const result = await fetch(baseURL + `/userprojects?id=${id}`);
 		return await result.json();
@@ -35,7 +35,7 @@ export const UserProjects = async (id) => {
 };
 
 //retrieve one project to render project details page
-export const getOneProject = async (id) => {
+export const getOneProject = async (id: any) => {
 	try {
 		const result = await fetch(baseURL + `/oneProject?id=${id}`);
 		return await result.json();
@@ -48,11 +48,11 @@ export const getOneProject = async (id) => {
 //add bid to a project
 
 export const createBid = async (
-	projectId,
-	bidPrice,
-	userId,
-	userName,
-	creatorPic
+	projectId: any,
+	bidPrice: any,
+	userId: any,
+	userName: any,
+	creatorPic: any
 ) => {
 	try {
 		const result = await fetch(baseURL + '/bid', {
@@ -73,7 +73,7 @@ export const createBid = async (
 	}
 };
 //edit bid value (done by contractor)
-export const editBid = async (projectId, bidPrice, userId) => {
+export const editBid = async (projectId: any, bidPrice: any, userId: any) => {
 	try {
 		const result = await fetch(baseURL + '/editbid', {
 			method: 'POST',
@@ -92,7 +92,7 @@ export const editBid = async (projectId, bidPrice, userId) => {
 };
 
 //client awards bid to contractor
-export const awardBidder = async (projectId, creatorId) => {
+export const awardBidder = async (projectId: any, creatorId: any) => {
 	try {
 		// alert("here");
 		const result = await fetch(baseURL + '/awardbid', {
@@ -115,7 +115,12 @@ export const awardBidder = async (projectId, creatorId) => {
 
 //RFI FUNCTIONS
 
-export const createRFI = async (projectId, question, userId, creatorPic) => {
+export const createRFI = async (
+	projectId: any,
+	question: any,
+	userId: any,
+	creatorPic: any
+) => {
 	try {
 		const result = await fetch(baseURL + '/RFI', {
 			method: 'POST',
@@ -134,7 +139,7 @@ export const createRFI = async (projectId, question, userId, creatorPic) => {
 	}
 };
 
-export const editRFI = async (projectId, rfiId, response) => {
+export const editRFI = async (projectId: any, rfiId: any, response: any) => {
 	try {
 		const result = await fetch(baseURL + '/RFIrespond', {
 			method: 'POST',
@@ -155,13 +160,13 @@ export const editRFI = async (projectId, rfiId, response) => {
 //USER FUNCTIONS
 
 export const leaveReview = async (
-	rating,
-	review,
-	creatorFirstName,
-	creatorLastName,
-	creatorPic,
-	bidderId,
-	projectId
+	rating: any,
+	review: any,
+	creatorFirstName: any,
+	creatorLastName: any,
+	creatorPic: any,
+	bidderId: any,
+	projectId: any
 ) => {
 	try {
 		const result = await fetch(baseURL + '/review', {
@@ -184,7 +189,7 @@ export const leaveReview = async (
 	}
 };
 
-export const register = (formData) => {
+export const register = (formData: any) => {
 	return fetch(`${baseURL}/register`, {
 		method: 'POST',
 		credentials: 'include',
@@ -195,7 +200,7 @@ export const register = (formData) => {
 		.catch((err) => console.log(err));
 };
 
-export const loginUser = (formData) => {
+export const loginUser = (formData: any) => {
 	return fetch(`${baseURL}/login`, {
 		method: 'POST',
 		credentials: 'include',
@@ -222,7 +227,7 @@ export const profile = async () => {
 };
 
 //retrieve another users profile for viewing without effecting auth
-export const getOtherProfile = async (id) => {
+export const getOtherProfile = async (id: any) => {
 	try {
 		const result = await fetch(baseURL + `/otherprofile?id=${id}`);
 		return await result.json();
