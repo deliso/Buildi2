@@ -2,21 +2,28 @@
 
 import { Request, Response } from 'express';
 import Project from '../model/project.model';
-// import session from 'express-session';
 import User from '../model/user.model';
+// import session from 'express-session';
 import { Review, UserT } from '../../types/userTypes';
 import { Bid, RFI, ProjectT } from '../../types/projectTypes';
 
+declare module 'express-session' {
+	export interface SessionData {
+		uid: string;
+	}
+}
+
 const bcrypt = require('bcrypt');
 
-// Creates a new project
+// 1. Creates a new project
 const postProject = async (req: Request, res: Response) => {
+	console.log(req.body._id);
 	try {
 		await Project<ProjectT>.create({
 			projectImage: req.file?.path,
 			name: req.body.name,
 			description: req.body.description,
-			userId: req.body.id,
+			userId: req.body._id,
 			specialties: req.body.specialties.split(','),
 			lifeCycle: 'open',
 			bids: [],
@@ -26,24 +33,22 @@ const postProject = async (req: Request, res: Response) => {
 		res.send('success!');
 	} catch (e) {
 		res.status(504);
+		console.log(e);
 	}
 };
-// Return lists of all projects
+// 2. Return lists of all projects (WORKS)
 const returnProjects = async (req: Request, res: Response) => {
 	try {
-		console.log('in');
 		const projects: ProjectT[] = await Project.find();
-		console.log(projects);
 		res.status(200).send(projects);
 	} catch (e) {
 		res.status(505).send(e);
 	}
 };
 
-// Return list of projects specific to a user
+// 3. Return list of projects specific to a user
 const returnProjectsById = async (req: Request, res: Response) => {
 	try {
-		console.log('param id:', req.query.id);
 	} catch (e) {
 		res.status(505).send(e);
 	}
@@ -51,6 +56,7 @@ const returnProjectsById = async (req: Request, res: Response) => {
 
 const returnOneProject = async (req: Request, res: Response) => {
 	try {
+		console.log(req.query.id);
 		const project: ProjectT = await Project.findById(req.query.id);
 		return res.status(200).send(project);
 	} catch (e) {
@@ -59,11 +65,12 @@ const returnOneProject = async (req: Request, res: Response) => {
 	return 'Project not found';
 };
 
-// BIDS
+// 4. BIDS
 const addBid = async (req: Request, res: Response) => {
 	try {
+		console.log(req.body);
 		const projectToUpdate: Bid = await Project.findByIdAndUpdate(
-			req.body?.id,
+			req.body?._id,
 			{
 				$push: {
 					bids: {
@@ -83,10 +90,11 @@ const addBid = async (req: Request, res: Response) => {
 	}
 };
 
+// 5. Updates a bid
 const changeBid = async (req: Request, res: Response) => {
 	try {
 		const projectToUpdate: ProjectT = await Project.findOneAndUpdate(
-			{ _id: req.body.id, 'bids.creatorId': req.body.creatorId },
+			{ _id: req.body._id, 'bids.creatorId': req.body.creatorId },
 			{
 				$set: {
 					'bids.$.bidPrice': req.body.bidPrice,
@@ -99,11 +107,11 @@ const changeBid = async (req: Request, res: Response) => {
 		res.status(505).send(e);
 	}
 };
-// will update awarded bid status and also set project life cycle to awarded
+// 6. will update awarded bid status and also set project life cycle to awarded
 const awardBid = async (req: Request, res: Response) => {
 	try {
 		let projectToUpdate: ProjectT = await Project.findOneAndUpdate(
-			{ _id: req.body.id, 'bids.creatorId': req.body.creatorId },
+			{ _id: req.body._id, 'bids.creatorId': req.body.creatorId },
 			{
 				$set: {
 					'bids.$.awarded': true,
@@ -113,7 +121,7 @@ const awardBid = async (req: Request, res: Response) => {
 		);
 
 		projectToUpdate = await Project.findOneAndUpdate(
-			{ _id: req.body.id },
+			{ _id: req.body._id },
 			{
 				$set: {
 					lifeCycle: 'awarded',
@@ -127,11 +135,11 @@ const awardBid = async (req: Request, res: Response) => {
 	}
 };
 
-// RFIS
+// 7. RFIS
 const addRFI = async (req: Request, res: Response) => {
 	try {
 		const projectToUpdate: ProjectT = await Project.findByIdAndUpdate(
-			req.body.id,
+			req.body._id,
 			{
 				$push: {
 					rfis: {
@@ -153,7 +161,7 @@ const addRFI = async (req: Request, res: Response) => {
 const respondRFI = async (req: Request, res: Response) => {
 	try {
 		const projectToUpdate: ProjectT = await Project.findOneAndUpdate(
-			{ _id: req.body.id, 'rfis._id': req.body.rfiId },
+			{ _id: req.body._id, 'rfis._id': req.body.rfiId },
 			{
 				$set: {
 					'rfis.$.response': req.body.response,
@@ -167,7 +175,7 @@ const respondRFI = async (req: Request, res: Response) => {
 	}
 };
 
-// USER FUNCTIONS
+// 8. USER FUNCTIONS
 // <any, any, UserT>
 const createReview = async (req: Request, res: Response) => {
 	try {
@@ -203,7 +211,7 @@ const createReview = async (req: Request, res: Response) => {
 		res.status(505).send(e);
 	}
 };
-
+// 9. Creates user
 const createUser = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
 	const user: UserT | null = await User.findOne({ email });
@@ -225,7 +233,7 @@ const createUser = async (req: Request, res: Response) => {
 
 		const user1 = await newUser.save();
 
-		req.session.id = user1.id;
+		req.session.uid = user1._id;
 		res.status(201).send(user1);
 	} catch (error) {
 		res
@@ -235,54 +243,36 @@ const createUser = async (req: Request, res: Response) => {
 	return 'Error, could not create a new user =(';
 };
 
+//10. Login
 const login = async (req: Request, res: Response) => {
 	try {
 		const { email, password } = req.body;
-		const user: UserT = await User.findOne({ email });
+		const user: UserT | null = await User.findOne({ email });
 		const validatedPass = await bcrypt.compare(password, user?.password);
-		if (!validatedPass) throw new Error();
-		req.session.id = user!.id;
 
+		if (!validatedPass) throw new Error();
+		req.session.uid = user!._id;
 		res.status(200).send(user);
 	} catch (error) {
+		console.log(error);
+
 		res
 			.status(401)
 			.send({ error: '401', message: 'Username or password is incorrect' });
 	}
 };
-// This version uses auth middleware for logged in user
+// 11. This version uses auth middleware for logged in user
 const profile = async (req: Request, res: Response) => {
 	try {
-		const {
-			_id,
-			profilePic,
-			firstName,
-			lastName,
-			userType,
-			location,
-			email,
-			specialties,
-			reviews,
-		} = req.body.user;
-		const user = {
-			_id,
-			profilePic,
-			firstName,
-			lastName,
-			userType,
-			location,
-			email,
-			specialties,
-			reviews,
-		};
-		res.status(200).send(user);
+		const user = { ...req.body.user };
+		res.status(200).send(user[0]);
 	} catch (error) {
 		res.status(404).send({ error, message: 'User not found' });
 	}
 };
 
 // This version is to obtain profile details of another user, without changing the authorized user (to view someone elses profile)
-// UPDATE LATER SO YOU DO NOT SEND BACK ANY SENSITIVE INFO (IF YOU HAVE TIME)
+// 12. UPDATE LATER SO YOU DO NOT SEND BACK ANY SENSITIVE INFO (IF YOU HAVE TIME)
 const getOtherProfile = async (
 	req: Request<any, any, UserT>,
 	res: Response

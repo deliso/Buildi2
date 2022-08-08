@@ -54,6 +54,7 @@ router.post(
 );
 router.post(
 	'/login',
+	// () => console.log('login router')
 	upload.single(
 		'formData would not be recieved without this middleware (which is meant for uploadings pictures). This is a temp bandaid fix. Nothing gets uploaded'
 	),
