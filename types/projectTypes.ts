@@ -5,7 +5,7 @@ type Bid = {
   creatorPic: string;
   awarded: boolean;
   id?: number;
-} | null;
+};
 
 type RFI = {
   question: string;

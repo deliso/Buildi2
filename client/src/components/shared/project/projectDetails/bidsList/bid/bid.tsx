@@ -1,5 +1,6 @@
 import { Link, Outlet } from 'react-router-dom';
 import { awardBidder } from '../../../../../../service/projectService';
+// const awardBidder = require '../../../../../../service/projectService';
 //MUI IMPORTS
 import * as React from 'react';
 import ListItem from '@mui/material/ListItem';
@@ -14,18 +15,29 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
-
+import { Review, UserT } from '../../../../../../../../types/userTypes';
+import {
+	BidT,
+	RFI,
+	ProjectT,
+} from '../../../../../../../../types/projectTypes';
+import { FunctionComponent, MutableRefObject, useEffect, useRef } from 'react';
 //ICONS
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-
-function Bid({ bid, user, projectId }) {
+type Props = {
+	bid: BidT;
+	user: UserT;
+	projectId: ProjectT;
+};
+// const Bid: FunctionComponent = ({ bid, user, projectId }) => {
+const Bid = (props: Props) => {
 	//FOR MUI TEST
 	const [secondary, setSecondary] = React.useState(false);
 	//END
 	//FOR MUI FORM DIALOG
 	const [open, setOpen] = React.useState(false);
 
-	const handleClickOpen = (e) => {
+	const handleClickOpen = () => {
 		setOpen(true);
 	};
 
@@ -34,12 +46,12 @@ function Bid({ bid, user, projectId }) {
 	};
 	//END
 	const submitHandler = async () => {
-		await awardBidder(projectId, bid.creatorId);
+		await awardBidder(props.projectId, props.bid.creatorId);
 		alert('bidder awarded!');
 	};
 	return (
 		<>
-			{user.userType == 'client' ? (
+			{props.user.userType == 'client' ? (
 				<>
 					<Box>
 						<ListItem
@@ -55,19 +67,19 @@ function Bid({ bid, user, projectId }) {
 						>
 							<ListItemAvatar>
 								<Avatar
-									alt={bid.creatorName}
-									src={`http://localhost:3000/${bid.creatorPic}`}
+									alt={props.bid.creatorName}
+									src={`http://localhost:3000/${props.bid.creatorPic}`}
 								></Avatar>
 							</ListItemAvatar>
 							<ListItem
 								button
 								component={Link}
-								to={`../contractor/profile/${bid.creatorId}`}
+								to={`../contractor/profile/${props.bid.creatorId}`}
 							>
-								<ListItemText primary={bid.creatorName} />
+								<ListItemText primary={props.bid.creatorName} />
 							</ListItem>
 							<ListItemText
-								primary={`$${bid.bidPrice}`}
+								primary={`$${props.bid.bidPrice}`}
 								secondary={secondary ? 'Not loaded' : null}
 								style={{ padding: '0 5vw 0 0' }}
 							/>
@@ -78,7 +90,7 @@ function Bid({ bid, user, projectId }) {
 						<DialogContent>
 							<form onSubmit={submitHandler} id="awardBid">
 								<DialogContentText>
-									Do you want to award this project to {bid.creatorName}?
+									Do you want to award this project to {props.bid.creatorName}?
 								</DialogContentText>
 							</form>
 						</DialogContent>
@@ -97,6 +109,6 @@ function Bid({ bid, user, projectId }) {
 			<Outlet />
 		</>
 	);
-}
+};
 
 export default Bid;
