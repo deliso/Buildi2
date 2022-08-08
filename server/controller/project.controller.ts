@@ -17,28 +17,28 @@ const bcrypt = require('bcrypt');
 
 // 1. Creates a new project
 const postProject = async (req: Request, res: Response) => {
+	console.log(req.body._id);
 	try {
 		await Project<ProjectT>.create({
 			projectImage: req.file?.path,
 			name: req.body.name,
 			description: req.body.description,
-			userId: req.body.id,
+			userId: req.body._id,
 			specialties: req.body.specialties.split(','),
 			lifeCycle: 'open',
 			bids: [],
 			rfis: [],
 		});
-		console.log(req.body.id);
 		res.status(202);
 		res.send('success!');
 	} catch (e) {
 		res.status(504);
+		console.log(e);
 	}
 };
 // 2. Return lists of all projects (WORKS)
 const returnProjects = async (req: Request, res: Response) => {
 	try {
-		console.log('getting projects...');
 		const projects: ProjectT[] = await Project.find();
 		res.status(200).send(projects);
 	} catch (e) {
@@ -49,7 +49,6 @@ const returnProjects = async (req: Request, res: Response) => {
 // 3. Return list of projects specific to a user
 const returnProjectsById = async (req: Request, res: Response) => {
 	try {
-		console.log('param id:', req.query.id);
 	} catch (e) {
 		res.status(505).send(e);
 	}
@@ -57,6 +56,7 @@ const returnProjectsById = async (req: Request, res: Response) => {
 
 const returnOneProject = async (req: Request, res: Response) => {
 	try {
+		console.log(req.query.id);
 		const project: ProjectT = await Project.findById(req.query.id);
 		return res.status(200).send(project);
 	} catch (e) {
@@ -68,8 +68,9 @@ const returnOneProject = async (req: Request, res: Response) => {
 // 4. BIDS
 const addBid = async (req: Request, res: Response) => {
 	try {
+		console.log(req.body);
 		const projectToUpdate: Bid = await Project.findByIdAndUpdate(
-			req.body?.id,
+			req.body?._id,
 			{
 				$push: {
 					bids: {
@@ -93,7 +94,7 @@ const addBid = async (req: Request, res: Response) => {
 const changeBid = async (req: Request, res: Response) => {
 	try {
 		const projectToUpdate: ProjectT = await Project.findOneAndUpdate(
-			{ _id: req.body.id, 'bids.creatorId': req.body.creatorId },
+			{ _id: req.body._id, 'bids.creatorId': req.body.creatorId },
 			{
 				$set: {
 					'bids.$.bidPrice': req.body.bidPrice,
@@ -110,7 +111,7 @@ const changeBid = async (req: Request, res: Response) => {
 const awardBid = async (req: Request, res: Response) => {
 	try {
 		let projectToUpdate: ProjectT = await Project.findOneAndUpdate(
-			{ _id: req.body.id, 'bids.creatorId': req.body.creatorId },
+			{ _id: req.body._id, 'bids.creatorId': req.body.creatorId },
 			{
 				$set: {
 					'bids.$.awarded': true,
@@ -120,7 +121,7 @@ const awardBid = async (req: Request, res: Response) => {
 		);
 
 		projectToUpdate = await Project.findOneAndUpdate(
-			{ _id: req.body.id },
+			{ _id: req.body._id },
 			{
 				$set: {
 					lifeCycle: 'awarded',
@@ -138,7 +139,7 @@ const awardBid = async (req: Request, res: Response) => {
 const addRFI = async (req: Request, res: Response) => {
 	try {
 		const projectToUpdate: ProjectT = await Project.findByIdAndUpdate(
-			req.body.id,
+			req.body._id,
 			{
 				$push: {
 					rfis: {
@@ -160,7 +161,7 @@ const addRFI = async (req: Request, res: Response) => {
 const respondRFI = async (req: Request, res: Response) => {
 	try {
 		const projectToUpdate: ProjectT = await Project.findOneAndUpdate(
-			{ _id: req.body.id, 'rfis._id': req.body.rfiId },
+			{ _id: req.body._id, 'rfis._id': req.body.rfiId },
 			{
 				$set: {
 					'rfis.$.response': req.body.response,
@@ -213,9 +214,7 @@ const createReview = async (req: Request, res: Response) => {
 // 9. Creates user
 const createUser = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
-	console.log(email);
 	const user: UserT | null = await User.findOne({ email });
-	console.log(user);
 	if (user) {
 		return res
 			.status(409)
@@ -234,7 +233,7 @@ const createUser = async (req: Request, res: Response) => {
 
 		const user1 = await newUser.save();
 
-		req.session.id = user1.id;
+		req.session.uid = user1._id;
 		res.status(201).send(user1);
 	} catch (error) {
 		res
@@ -247,7 +246,6 @@ const createUser = async (req: Request, res: Response) => {
 //10. Login
 const login = async (req: Request, res: Response) => {
 	try {
-		console.log('login');
 		const { email, password } = req.body;
 		const user: UserT | null = await User.findOne({ email });
 		const validatedPass = await bcrypt.compare(password, user?.password);
@@ -266,9 +264,7 @@ const login = async (req: Request, res: Response) => {
 // 11. This version uses auth middleware for logged in user
 const profile = async (req: Request, res: Response) => {
 	try {
-		console.log('body', req.body.user);
 		const user = { ...req.body.user };
-		console.log('user', user);
 		res.status(200).send(user[0]);
 	} catch (error) {
 		res.status(404).send({ error, message: 'User not found' });
