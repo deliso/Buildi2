@@ -5,7 +5,7 @@ import Project from '../model/project.model';
 import User from '../model/user.model';
 // import session from 'express-session';
 import { Review, UserT } from '../../types/userTypes';
-import { BidT, RFI, ProjectT } from '../../types/projectTypes';
+import { BidT, RFIT, ProjectT } from '../../types/projectTypes';
 
 declare module 'express-session' {
 	export interface SessionData {
@@ -225,15 +225,17 @@ const createUser = async (req: Request, res: Response) => {
 		const hash = await bcrypt.hash(password, 10);
 		const newUser = new User({
 			...req.body,
-			profilePic: req.file?.path,
-			specialties: req.body.specialties.split(','),
+			profilePic: req.file?.path || '',
+			specialties: [...req.body.specialties],
 			reviews: [],
 			password: hash,
 		});
 
 		const user1 = await newUser.save();
+		const savedUsers = await User.find();
+		console.log(savedUsers);
 
-		req.session.uid = user1._id;
+		// req.session.uid = user1._id;
 		res.status(201).send(user1);
 	} catch (error) {
 		res

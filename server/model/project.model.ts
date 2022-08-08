@@ -1,5 +1,5 @@
 import mongoose, { model } from 'mongoose';
-import { BidT, RFI, ProjectT } from '../../types/projectTypes';
+import { BidT, RFIT, ProjectT } from '../../types/projectTypes';
 
 const { Schema } = mongoose;
 
@@ -11,7 +11,7 @@ const bidSchema = new Schema<BidT>({
 	awarded: Boolean,
 });
 
-const RFISchema = new Schema<RFI>({
+const RFISchema = new Schema<RFIT>({
 	question: String,
 	response: String,
 	creatorId: String,
