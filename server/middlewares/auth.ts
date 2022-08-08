@@ -1,14 +1,19 @@
-const User = require('./../model/user.model');
+import User from '../model/user.model';
 import { Request, Response, NextFunction } from 'express';
+var ObjectId = require('mongoose').Types.ObjectId;
 
 const authMiddleware = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
+	console.log('middleware');
+
 	try {
-		const { id } = req.session;
-		const user = await User.findOne({ _id: id });
+		const { uid } = req.session;
+		console.log(uid);
+		const user = await User.find({ _id: uid });
+		console.log(user);
 		if (!user) throw new Error();
 		req.body.user = user;
 		next();
