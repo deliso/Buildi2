@@ -32,7 +32,14 @@ const projectSchema = new Schema<ProjectT>({
 	rfis: [RFISchema],
 });
 
+<<<<<<< HEAD
 const Project = mongoose.model('project', projectSchema);
 
 export default Project;
 // module.exports.Project = mongoose.model('project', projectSchema);
+=======
+const Project = model('Project', projectSchema);
+export default Project;
+
+
+>>>>>>> ae89e6fc7487d1590b384eaba51e86d2c59e100f
