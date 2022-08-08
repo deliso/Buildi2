@@ -41,14 +41,15 @@ function BidList(props: Props) {
 		setOpen(false);
 	};
 	//END
-	function submitHandlerNewBid(e: React.FormEvent<HTMLFormElement>) {
+	async function submitHandlerNewBid(e: React.ChangeEvent<HTMLFormElement>) {
 		e.preventDefault();
 		const target = e.target as HTMLFormElement;
 		// await
-		createBid(
+		await createBid(
 			props.projectId,
-			target.value,
+			// target.value,
 			// e.target.bidInput.value,
+			target.attributes.getNamedItem('bidInput')!.value,
 			props.user.id,
 			props.user.firstName,
 			props.user.profilePic
@@ -63,7 +64,9 @@ function BidList(props: Props) {
 		// });
 	}
 	console.log(props.user);
-	async function submitHandlerEditBid(event: React.FormEvent<HTMLFormElement>) {
+	async function submitHandlerEditBid(
+		event: React.ChangeEvent<HTMLFormElement>
+	) {
 		event.preventDefault();
 		const target = event.target as HTMLFormElement;
 
@@ -94,6 +97,11 @@ function BidList(props: Props) {
 										{props.project.bids
 											.filter((bid) => bid.creatorId == props.user.id)
 											.map((bid) => {
+												{
+													console.log(props.project);
+												}
+												console.log('Props.project true');
+												console.log(bid);
 												return <>${bid.bidPrice}</>;
 											})}
 									</Typography>
@@ -162,6 +170,8 @@ function BidList(props: Props) {
 										{props.project.bids
 											.filter((bid) => bid.creatorId == props.user.id)
 											.map((bid) => {
+												console.log(bid);
+												console.log('Props.project false');
 												return <>${bid.bidPrice}</>;
 											})}
 									</Typography>
@@ -196,7 +206,7 @@ function BidList(props: Props) {
 											<TextField
 												autoFocus
 												margin="dense"
-												name="bidInput"
+												// name="bidInput"
 												id="bid"
 												label="$..."
 												type="bid"
