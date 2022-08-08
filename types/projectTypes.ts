@@ -21,7 +21,7 @@ type ProjectT = {
   userId: string;
   specialties: string[];
   lifeCycle: string;
-  bids: Bid[];
+  bids: BidT[];
   rfis: RFI[];
 };
 export { BidT, RFI, ProjectT };
