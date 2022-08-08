@@ -50,7 +50,7 @@ function BidList(props: Props) {
 			// target.value,
 			// e.target.bidInput.value,
 			target.attributes.getNamedItem('bidInput')!.value,
-			props.user.id,
+			props.user._id,
 			props.user.firstName,
 			props.user.profilePic
 		);
@@ -71,7 +71,7 @@ function BidList(props: Props) {
 		const target = event.target as HTMLFormElement;
 
 		// await editBid(props.projectId, event.target.bidInput.value, props.user.id);
-		await editBid(props.projectId, target.value, props.user.id);
+		await editBid(props.projectId, target.value, props.user._id);
 		refreshPage();
 	}
 
@@ -95,7 +95,7 @@ function BidList(props: Props) {
 									<Typography variant="h6">Bids</Typography>
 									<Typography variant="h4" style={{ alignSelf: 'center' }}>
 										{props.project.bids
-											.filter((bid) => bid.creatorId == props.user.id)
+											.filter((bid) => bid.creatorId == props.user._id)
 											.map((bid) => {
 												{
 													console.log(props.project);
@@ -160,7 +160,7 @@ function BidList(props: Props) {
 											onClick={handleClickOpen}
 										>
 											{props.project.bids.filter(
-												(bid) => bid.creatorId == props.user.id
+												(bid) => bid.creatorId == props.user._id
 											).length
 												? 'Edit Bid'
 												: 'Bid'}
@@ -168,7 +168,7 @@ function BidList(props: Props) {
 									</Box>
 									<Typography variant="h4" style={{ alignSelf: 'center' }}>
 										{props.project.bids
-											.filter((bid) => bid.creatorId == props.user.id)
+											.filter((bid) => bid.creatorId == props.user._id)
 											.map((bid) => {
 												console.log(bid);
 												console.log('Props.project false');
@@ -180,7 +180,7 @@ function BidList(props: Props) {
 								<Dialog open={open} onClose={handleClose}>
 									<DialogTitle>
 										{props.project.bids.filter(
-											(bid) => bid.creatorId == props.user.id
+											(bid) => bid.creatorId == props.user._id
 										).length
 											? 'Edit Bid'
 											: 'Place Bid'}
@@ -189,7 +189,7 @@ function BidList(props: Props) {
 										<form
 											onSubmit={
 												props.project.bids.filter(
-													(bid) => bid.creatorId == props.user.id
+													(bid) => bid.creatorId == props.user._id
 												).length
 													? submitHandlerEditBid
 													: submitHandlerNewBid
@@ -198,7 +198,7 @@ function BidList(props: Props) {
 										>
 											<DialogContentText>
 												{props.project.bids.filter(
-													(bid) => bid.creatorId == props.user.id
+													(bid) => bid.creatorId == props.user._id
 												).length
 													? 'Update your bid below'
 													: 'Whats your bid price?'}
@@ -224,7 +224,7 @@ function BidList(props: Props) {
 								</Dialog>
 								{/* If you have already placed a bid on this project */}
 								{props.project.bids.filter(
-									(bid) => bid.creatorId == props.user.id
+									(bid) => bid.creatorId == props.user._id
 								).length ? (
 									<>
 										{/* <form action="submit" onSubmit={submitHandlerEditBid}>

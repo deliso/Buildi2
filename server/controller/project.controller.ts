@@ -57,7 +57,7 @@ const returnProjectsById = async (req: Request, res: Response) => {
 const returnOneProject = async (req: Request, res: Response) => {
 	try {
 		console.log(req.query.id);
-		const project: ProjectT = await Project.findById(req.query.id);
+		const project: ProjectT | null = await Project.findById(req.query.id);
 		return res.status(200).send(project);
 	} catch (e) {
 		res.status(505).send(e);
@@ -69,7 +69,7 @@ const returnOneProject = async (req: Request, res: Response) => {
 const addBid = async (req: Request, res: Response) => {
 	try {
 		console.log(req.body);
-		const projectToUpdate: Bid = await Project.findByIdAndUpdate(
+		const projectToUpdate: Bid | null = await Project.findByIdAndUpdate(
 			req.body?._id,
 			{
 				$push: {
@@ -93,7 +93,7 @@ const addBid = async (req: Request, res: Response) => {
 // 5. Updates a bid
 const changeBid = async (req: Request, res: Response) => {
 	try {
-		const projectToUpdate: ProjectT = await Project.findOneAndUpdate(
+		const projectToUpdate: ProjectT | null = await Project.findOneAndUpdate(
 			{ _id: req.body._id, 'bids.creatorId': req.body.creatorId },
 			{
 				$set: {
@@ -110,7 +110,7 @@ const changeBid = async (req: Request, res: Response) => {
 // 6. will update awarded bid status and also set project life cycle to awarded
 const awardBid = async (req: Request, res: Response) => {
 	try {
-		let projectToUpdate: ProjectT = await Project.findOneAndUpdate(
+		let projectToUpdate: ProjectT | null = await Project.findOneAndUpdate(
 			{ _id: req.body._id, 'bids.creatorId': req.body.creatorId },
 			{
 				$set: {
@@ -138,7 +138,7 @@ const awardBid = async (req: Request, res: Response) => {
 // 7. RFIS
 const addRFI = async (req: Request, res: Response) => {
 	try {
-		const projectToUpdate: ProjectT = await Project.findByIdAndUpdate(
+		const projectToUpdate: ProjectT | null = await Project.findByIdAndUpdate(
 			req.body._id,
 			{
 				$push: {
@@ -160,7 +160,7 @@ const addRFI = async (req: Request, res: Response) => {
 
 const respondRFI = async (req: Request, res: Response) => {
 	try {
-		const projectToUpdate: ProjectT = await Project.findOneAndUpdate(
+		const projectToUpdate: ProjectT | null = await Project.findOneAndUpdate(
 			{ _id: req.body._id, 'rfis._id': req.body.rfiId },
 			{
 				$set: {

@@ -1,12 +1,8 @@
-<<<<<<< HEAD:client/src/service/projectService.tsx
 import { Review, UserT } from '../../../types/userTypes';
 import { BidT, RFI, ProjectT } from '../../../types/projectTypes';
-const baseURL = 'http://localhost:3000';
-=======
+
 // const baseURL = "http://localhost:3000";
 const baseURL = 'http://localhost:3000';
-
->>>>>>> ae89e6fc7487d1590b384eaba51e86d2c59e100f:client/src/service/projectService.js
 
 //used in create project component to add a new project to the Projects database
 export const createProject = async (formData: any) => {
@@ -44,7 +40,6 @@ export const UserProjects = async (id: any) => {
 //retrieve one project to render project details page
 export const getOneProject = async (id: any) => {
 	try {
-
 		const result = await fetch(baseURL + `/oneProject?id=${id}`);
 		return await result.json();
 	} catch (e) {
