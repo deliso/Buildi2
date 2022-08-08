@@ -1,9 +1,9 @@
 import mongoose, { model } from 'mongoose';
-import { Bid, RFI, ProjectT } from '../../types/projectTypes';
+import { BidT, RFI, ProjectT } from '../../types/projectTypes';
 
 const { Schema } = mongoose;
 
-const bidSchema = new Schema<Bid>({
+const bidSchema = new Schema<BidT>({
 	bidPrice: Number,
 	creatorId: String,
 	creatorName: String,

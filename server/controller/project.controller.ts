@@ -5,7 +5,7 @@ import Project from '../model/project.model';
 import User from '../model/user.model';
 // import session from 'express-session';
 import { Review, UserT } from '../../types/userTypes';
-import { Bid, RFI, ProjectT } from '../../types/projectTypes';
+import { BidT, RFI, ProjectT } from '../../types/projectTypes';
 
 declare module 'express-session' {
 	export interface SessionData {
@@ -69,7 +69,7 @@ const returnOneProject = async (req: Request, res: Response) => {
 const addBid = async (req: Request, res: Response) => {
 	try {
 		console.log(req.body);
-		const projectToUpdate: Bid | null = await Project.findByIdAndUpdate(
+		const projectToUpdate: BidT | null = await Project.findByIdAndUpdate(
 			req.body?._id,
 			{
 				$push: {
