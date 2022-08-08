@@ -1,6 +1,7 @@
 // const baseURL = "http://localhost:3000";
 const baseURL = 'http://localhost:3000';
 
+
 //used in create project component to add a new project to the Projects database
 export const createProject = async (formData) => {
 	console.log('here');
@@ -37,7 +38,8 @@ export const UserProjects = async (id) => {
 //retrieve one project to render project details page
 export const getOneProject = async (id) => {
 	try {
-		const result = await fetch(baseURL + `?id=${id}`);
+
+		const result = await fetch(baseURL + `/oneProject?id=${id}`);
 		return await result.json();
 	} catch (e) {
 		console.log(e);
