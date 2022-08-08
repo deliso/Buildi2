@@ -1,4 +1,4 @@
-type BidT = {
+type Bid = {
   bidPrice: number;
   creatorId: string;
   creatorName: string;
@@ -21,7 +21,7 @@ type ProjectT = {
   userId: string;
   specialties: string[];
   lifeCycle: string;
-  bids: BidT[];
+  bids: Bid[];
   rfis: RFI[];
 } | null;
-export { BidT, RFI, ProjectT };
+export { Bid, RFI, ProjectT };
