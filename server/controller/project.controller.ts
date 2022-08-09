@@ -3,7 +3,6 @@
 import { Request, Response } from 'express';
 import Project from '../model/project.model';
 import User from '../model/user.model';
-// import session from 'express-session';
 import { Review, UserT } from '../../types/userTypes';
 import { BidT, RFIT, ProjectT } from '../../types/projectTypes';
 
@@ -56,7 +55,6 @@ const returnProjectsById = async (req: Request, res: Response) => {
 
 const returnOneProject = async (req: Request, res: Response) => {
 	try {
-		console.log(req.query.id);
 		const project: ProjectT | null = await Project.findById(req.query.id);
 		return res.status(200).send(project);
 	} catch (e) {
@@ -235,7 +233,7 @@ const createUser = async (req: Request, res: Response) => {
 		const savedUsers = await User.find();
 		console.log(savedUsers);
 
-		// req.session.uid = user1._id;
+		req.session.uid = user1._id;
 		res.status(201).send(user1);
 	} catch (error) {
 		res
@@ -253,7 +251,7 @@ const login = async (req: Request, res: Response) => {
 		const validatedPass = await bcrypt.compare(password, user?.password);
 
 		if (!validatedPass) throw new Error();
-		// req.session.uid = user!._id;
+		req.session.uid = user!._id;
 		res.status(200).send(user);
 	} catch (error) {
 		console.log(error);
