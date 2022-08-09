@@ -1,5 +1,5 @@
-import { Review, UserT } from '../../../types/userTypes';
-import { BidT, RFI, ProjectT } from '../../../types/projectTypes';
+import { ReviewT, UserT } from '../../../types/userTypes';
+import { BidT, RFIT, ProjectT } from '../../../types/projectTypes';
 
 // const baseURL = "http://localhost:3000";
 const baseURL = 'http://localhost:3000';

@@ -15,16 +15,22 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-
-function RFI({ rfi, user, projectId }) {
+import { UserT } from '../../../../../../../../types/userTypes';
+import { RFIT, ProjectT } from '../../../../../../../../types/projectTypes';
+type Props = {
+	rfi: RFIT;
+	user: UserT;
+	projectId: string;
+};
+function RFI(props: Props) {
 	//FOR FORCED REFRESHES(CHEATING)
 	function refreshPage() {
-		window.location.reload(false);
+		window.location.reload();
 	}
 	//FOR MUI FORM DIALOG
 	const [open, setOpen] = React.useState(false);
 
-	const handleClickOpen = (e) => {
+	const handleClickOpen = () => {
 		setOpen(true);
 		console.log('submit');
 	};
@@ -33,19 +39,23 @@ function RFI({ rfi, user, projectId }) {
 		setOpen(false);
 	};
 	//END
-	const submitHandler = async (event) => {
+	const submitHandler = async (event: React.ChangeEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		await editRFI(projectId, rfi._id, event.target.rfiResponseInput.value);
+		const target = event.target.rfiResponseInput as HTMLFormElement;
+		await editRFI(props.projectId, props.rfi._id, target.value);
 		refreshPage();
 	};
 	return (
 		<>
 			<ListItem alignItems="flex-start">
 				<ListItemAvatar>
-					<Avatar alt={'B'} src={`http://localhost:3000/${rfi.creatorPic}`} />
+					<Avatar
+						alt={'B'}
+						src={`http://localhost:3000/${props.rfi.creatorPic}`}
+					/>
 				</ListItemAvatar>
 				<ListItemText
-					primary={rfi.question}
+					primary={props.rfi.question}
 					secondary={
 						<React.Fragment>
 							<Typography
@@ -56,11 +66,11 @@ function RFI({ rfi, user, projectId }) {
 							>
 								Response
 							</Typography>
-							{` - ${rfi.response ? rfi.response : 'Pending'}`}
+							{` - ${props.rfi.response ? props.rfi.response : 'Pending'}`}
 						</React.Fragment>
 					}
 				/>
-				{user.userType === 'client' ? (
+				{props.user.userType === 'client' ? (
 					<IconButton edge="end" aria-label="reply" onClick={handleClickOpen}>
 						<ReplyIcon style={{ color: 'green' }} />
 					</IconButton>
