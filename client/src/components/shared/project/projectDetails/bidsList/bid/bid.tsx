@@ -15,12 +15,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
-import { Review, UserT } from '../../../../../../../../types/userTypes';
-import {
-	BidT,
-	RFI,
-	ProjectT,
-} from '../../../../../../../../types/projectTypes';
+import { UserT } from '../../../../../../../../types/userTypes';
+import { BidT, ProjectT } from '../../../../../../../../types/projectTypes';
 import { FunctionComponent, MutableRefObject, useEffect, useRef } from 'react';
 //ICONS
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';

@@ -1,4 +1,4 @@
-type Review = {
+type ReviewT = {
   rating: number;
   review: string;
   creatorFirstName: string;
@@ -14,7 +14,7 @@ type UserT = {
   lastName: string;
   location: string;
   specialties: string[];
-  reviews: Review[];
+  reviews: ReviewT[];
   _id: string;
 };
-export { Review, UserT };
+export { ReviewT, UserT };

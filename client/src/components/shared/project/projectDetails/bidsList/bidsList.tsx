@@ -12,8 +12,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
-import { Review, UserT } from '../../../../../../../types/userTypes';
-import { BidT, RFI, ProjectT } from '../../../../../../../types/projectTypes';
+import { UserT } from '../../../../../../../types/userTypes';
+import { BidT, ProjectT } from '../../../../../../../types/projectTypes';
 import { FunctionComponent, MutableRefObject, useEffect, useRef } from 'react';
 //ICONS
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
