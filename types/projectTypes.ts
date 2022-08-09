@@ -7,11 +7,12 @@ type BidT = {
   id?: number;
 };
 
-type RFI = {
+type RFIT = {
   question: string;
   response: string;
   creatorId: string;
   creatorPic: string;
+  _id: string;
 };
 
 type ProjectT = {
@@ -22,6 +23,6 @@ type ProjectT = {
   specialties: string[];
   lifeCycle: string;
   bids: BidT[];
-  rfis: RFI[];
+  rfis: RFIT[];
 };
-export { BidT, RFI, ProjectT };
+export { BidT, RFIT, ProjectT };

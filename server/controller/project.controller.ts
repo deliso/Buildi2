@@ -3,9 +3,8 @@
 import { Request, Response } from 'express';
 import Project from '../model/project.model';
 import User from '../model/user.model';
-// import session from 'express-session';
 import { Review, UserT } from '../../types/userTypes';
-import { BidT, RFI, ProjectT } from '../../types/projectTypes';
+import { BidT, RFIT, ProjectT } from '../../types/projectTypes';
 
 declare module 'express-session' {
 	export interface SessionData {
@@ -17,23 +16,22 @@ const bcrypt = require('bcrypt');
 
 // 1. Creates a new project
 const postProject = async (req: Request, res: Response) => {
-	console.log(req.body._id);
 	try {
-		await Project<ProjectT>.create({
+		const newProject = await Project<ProjectT>.create({
 			projectImage: req.file?.path,
 			name: req.body.name,
 			description: req.body.description,
 			userId: req.body._id,
-			specialties: req.body.specialties.split(','),
+			specialties: [...req.body.specialties],
 			lifeCycle: 'open',
 			bids: [],
 			rfis: [],
 		});
 		res.status(202);
-		res.send('success!');
-	} catch (e) {
+		res.send(newProject);
+	} catch (error) {
 		res.status(504);
-		console.log(e);
+		console.log(error);
 	}
 };
 // 2. Return lists of all projects (WORKS)
@@ -56,7 +54,6 @@ const returnProjectsById = async (req: Request, res: Response) => {
 
 const returnOneProject = async (req: Request, res: Response) => {
 	try {
-		console.log(req.query.id);
 		const project: ProjectT | null = await Project.findById(req.query.id);
 		return res.status(200).send(project);
 	} catch (e) {
@@ -68,7 +65,6 @@ const returnOneProject = async (req: Request, res: Response) => {
 // 4. BIDS
 const addBid = async (req: Request, res: Response) => {
 	try {
-		console.log(req.body);
 		const projectToUpdate: BidT | null = await Project.findByIdAndUpdate(
 			req.body?._id,
 			{
@@ -225,8 +221,8 @@ const createUser = async (req: Request, res: Response) => {
 		const hash = await bcrypt.hash(password, 10);
 		const newUser = new User({
 			...req.body,
-			profilePic: req.file?.path,
-			specialties: req.body.specialties.split(','),
+			profilePic: req.file?.path || '',
+			specialties: [...req.body.specialties],
 			reviews: [],
 			password: hash,
 		});
