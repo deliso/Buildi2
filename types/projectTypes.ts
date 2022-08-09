@@ -25,5 +25,6 @@ type ProjectT = {
   bids: BidT[];
   rfis: RFIT[];
   _id: string;
+
 };
 export { BidT, RFIT, ProjectT };

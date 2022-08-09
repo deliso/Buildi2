@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 });
 // note that I can use multer to filter by file types, only accept certain file sizes, etc.
 // creates a multer instance
-const upload = multer({ storage });
+export const upload = multer({ storage });
 // ROUTES
 // create project
 router.post(
@@ -66,4 +66,5 @@ router.get('/profile', authMiddleware, projectController.profile);
 router.get('/otherprofile', projectController.getOtherProfile);
 router.post('/logout', authMiddleware, projectController.logout);
 
+module.exports = router;
 export default router;
