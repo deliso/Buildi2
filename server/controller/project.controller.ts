@@ -16,23 +16,22 @@ const bcrypt = require('bcrypt');
 
 // 1. Creates a new project
 const postProject = async (req: Request, res: Response) => {
-	console.log(req.body._id);
 	try {
-		await Project<ProjectT>.create({
+		const newProject = await Project<ProjectT>.create({
 			projectImage: req.file?.path,
 			name: req.body.name,
 			description: req.body.description,
 			userId: req.body._id,
-			specialties: req.body.specialties.split(','),
+			specialties: [...req.body.specialties],
 			lifeCycle: 'open',
 			bids: [],
 			rfis: [],
 		});
 		res.status(202);
-		res.send('success!');
-	} catch (e) {
+		res.send(newProject);
+	} catch (error) {
 		res.status(504);
-		console.log(e);
+		console.log(error);
 	}
 };
 // 2. Return lists of all projects (WORKS)
@@ -66,7 +65,6 @@ const returnOneProject = async (req: Request, res: Response) => {
 // 4. BIDS
 const addBid = async (req: Request, res: Response) => {
 	try {
-		console.log(req.body);
 		const projectToUpdate: BidT | null = await Project.findByIdAndUpdate(
 			req.body?._id,
 			{
@@ -230,8 +228,6 @@ const createUser = async (req: Request, res: Response) => {
 		});
 
 		const user1 = await newUser.save();
-		const savedUsers = await User.find();
-		console.log(savedUsers);
 
 		req.session.uid = user1._id;
 		res.status(201).send(user1);

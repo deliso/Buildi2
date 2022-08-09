@@ -2,13 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const request = require('supertest');
-const User = require('./dist/server/model/user.model.js');
-const router = require('./dist/server/router.js');
+const User = require('../dist/server/model/user.model.js');
+const router = require('../dist/server/router.js');
 const session = require('express-session');
 
 const testDatabase = 'buildi_test';
 
 const PORT = 3005;
+let testServer;
 
 const testUser = {
 	profilePic: '',
@@ -20,10 +21,6 @@ const testUser = {
 	location: 'San Diego',
 	specialties: ['plumbing', 'electrical'],
 };
-
-// const setCookies = (res) => {
-// 	console.log('headers', res.headers);
-// };
 
 describe('Register and login', () => {
 	const app = express();
@@ -52,11 +49,13 @@ describe('Register and login', () => {
 			})
 		);
 		app.use(router);
-		app.listen(PORT, () => console.log('test server'));
+		testServer = app.listen(PORT);
 	});
 
 	afterAll(async () => {
 		await User.deleteMany();
+		testServer.close();
+		mongoose.connection.close();
 	});
 
 	it('should save a user in the database', (done) => {
@@ -67,6 +66,7 @@ describe('Register and login', () => {
 			.expect(201)
 			.end((err, res) => {
 				if (err) return done(err);
+				expect(res.body.firstName).toBe(testUser.firstName);
 				return done();
 			});
 	});
@@ -92,7 +92,6 @@ describe('Register and login', () => {
 			.end((err, res) => {
 				if (err) return done(err);
 				cookies = res.headers['set-cookie'].pop().split(';')[0];
-				console.log(cookies);
 				return done();
 			});
 	});
@@ -104,7 +103,6 @@ describe('Register and login', () => {
 			.expect(200)
 			.end((err, res) => {
 				if (err) return done(err);
-				// console.log(res.cookies.sid);
 				expect(res.headers['set-cookie'].pop().split(';')[0].length).toBe(4);
 				return done();
 			});

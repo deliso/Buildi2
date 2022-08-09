@@ -35,3 +35,4 @@ const projectSchema = new Schema<ProjectT>({
 const Project = mongoose.model('project', projectSchema);
 
 export default Project;
+module.exports = model('Project', projectSchema);
