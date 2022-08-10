@@ -112,6 +112,7 @@ function ClientRegister(props) {
 					</Button>
 					<Button
 						type="submit"
+						data-testid="submit-client-reg"
 						variant="contained"
 						color="secondary"
 						style={{
