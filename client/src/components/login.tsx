@@ -132,6 +132,7 @@ const Login = (props: Props) => {
 						or
 					</Typography>
 					<Button
+						data-testid="register-button"
 						variant="contained"
 						style={{
 							padding: '1vw 27vw 1vw 27vw',

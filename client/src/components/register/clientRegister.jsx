@@ -68,27 +68,32 @@ function ClientRegister(props) {
 					}}
 				>
 					<TextField
+						data-testid="client-reg-email"
 						label="Email"
 						name="email"
 						style={{ backgroundColor: 'white', borderRadius: 7, width: '70vw' }}
 					/>
 					<TextField
+						data-testid="client-reg-password"
 						label="Password"
 						name="password"
 						type="password"
 						style={{ backgroundColor: 'white', borderRadius: 7, width: '70vw' }}
 					/>
 					<TextField
+						data-testid="client-reg-firstname"
 						label="First Name"
 						name="firstName"
 						style={{ backgroundColor: 'white', borderRadius: 7, width: '70vw' }}
 					/>
 					<TextField
+						data-testid="client-reg-lastname"
 						label="Last Name"
 						name="lastName"
 						style={{ backgroundColor: 'white', borderRadius: 7, width: '70vw' }}
 					/>
 					<TextField
+						data-testid="client-reg-location"
 						fullWidth
 						label="Location"
 						name="location"
