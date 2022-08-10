@@ -9,9 +9,15 @@ import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
-
-function Discover({ projects, user }) {
-	let projectsList = [];
+import { UserT } from '../../../../../types/userTypes';
+import { ProjectT } from '../../../../../types/projectTypes';
+type Props = {
+	projects: ProjectT[];
+	user: UserT;
+};
+function Discover(props: Props) {
+	const { projects, user } = props;
+	let projectsList: ProjectT[] = [];
 
 	projectsList = projects.filter((pr) => pr.lifeCycle == 'open');
 
@@ -22,7 +28,7 @@ function Discover({ projects, user }) {
 					<Typography
 						variant="h6"
 						component="div"
-						onClick={() => window.location.reload(false)}
+						onClick={() => window.location.reload()}
 					>
 						Discover
 					</Typography>

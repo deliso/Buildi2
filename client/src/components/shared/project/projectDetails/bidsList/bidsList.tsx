@@ -12,8 +12,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
-import { Review, UserT } from '../../../../../../../types/userTypes';
-import { BidT, RFI, ProjectT } from '../../../../../../../types/projectTypes';
+import { UserT } from '../../../../../../../types/userTypes';
+import { BidT, ProjectT } from '../../../../../../../types/projectTypes';
 import { FunctionComponent, MutableRefObject, useEffect, useRef } from 'react';
 //ICONS
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -43,13 +43,11 @@ function BidList(props: Props) {
 	//END
 	async function submitHandlerNewBid(e: React.ChangeEvent<HTMLFormElement>) {
 		e.preventDefault();
-		const target = e.target as HTMLFormElement;
+		const target = e.target.bidInput as HTMLFormElement;
 		// await
 		await createBid(
 			props.projectId,
-			// target.value,
-			// e.target.bidInput.value,
-			target.attributes.getNamedItem('bidInput')!.value,
+			target.value,
 			props.user._id,
 			props.user.firstName,
 			props.user.profilePic
@@ -68,7 +66,7 @@ function BidList(props: Props) {
 		event: React.ChangeEvent<HTMLFormElement>
 	) {
 		event.preventDefault();
-		const target = event.target as HTMLFormElement;
+		const target = event.target.bidInput as HTMLFormElement;
 
 		// await editBid(props.projectId, event.target.bidInput.value, props.user.id);
 		await editBid(props.projectId, target.value, props.user._id);
@@ -206,7 +204,7 @@ function BidList(props: Props) {
 											<TextField
 												autoFocus
 												margin="dense"
-												// name="bidInput"
+												name="bidInput"
 												id="bid"
 												label="$..."
 												type="bid"

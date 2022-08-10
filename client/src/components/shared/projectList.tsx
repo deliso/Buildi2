@@ -9,30 +9,36 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { UserT } from '../../../../types/userTypes';
+import { ProjectT } from '../../../../types/projectTypes';
+type Props = {
+	user: UserT;
+	projects: ProjectT[];
+};
+function ProjectsList(props: Props) {
+	const { user, projects } = props;
+	let projectsList: ProjectT[] = [];
+	let biddingProjects: ProjectT[] = [];
+	let awardedProjects: ProjectT[] = [];
 
-function ProjectsList({ projects, user }) {
-	let projectsList = [];
-	let biddingProjects = [];
-	let awardedProjects = [];
-
-	if (user.userType == 'contractor') {
+	if (props.user.userType == 'contractor') {
 		projects.forEach((pr) => {
 			pr.bids.forEach((bid) => {
-				if (bid.creatorId === user._id && bid.awarded === false)
+				if (bid.creatorId === props.user._id && bid.awarded === false)
 					biddingProjects.push(pr);
 				return;
 			});
 		});
 
-		projects.forEach((pr) => {
+		props.projects.forEach((pr) => {
 			pr.bids.forEach((bid) => {
-				if (bid.creatorId === user._id && bid.awarded === true)
+				if (bid.creatorId === props.user._id && bid.awarded === true)
 					awardedProjects.push(pr);
 				return;
 			});
 		});
 	} else if (user.userType === 'client') {
-		projectsList = projects.filter((pr) => pr.userId == user._id);
+		projectsList = props.projects.filter((pr) => pr.userId == props.user._id);
 	} else {
 		projectsList = [];
 	}
@@ -40,7 +46,7 @@ function ProjectsList({ projects, user }) {
 	//HANDLING TABS
 	const [value, setValue] = React.useState(0);
 
-	const handleTabs = (e, val) => {
+	const handleTabs = (e: any, val: number) => {
 		console.log(val);
 		setValue(val);
 	};
@@ -54,9 +60,11 @@ function ProjectsList({ projects, user }) {
 					textColor="inherit"
 					variant="fullWidth"
 				>
-					<Tab label={user.userType === 'client' ? 'Open' : 'Bidding'}></Tab>
 					<Tab
-						label={user.userType === 'client' ? 'In Progress' : 'Awarded'}
+						label={props.user.userType === 'client' ? 'Open' : 'Bidding'}
+					></Tab>
+					<Tab
+						label={props.user.userType === 'client' ? 'In Progress' : 'Awarded'}
 					></Tab>
 				</Tabs>
 			</AppBar>
@@ -78,7 +86,7 @@ function ProjectsList({ projects, user }) {
 						>
 							<ImageListItem key="Subheader" cols={1}></ImageListItem>
 							{/* IF YOU ARE A CLIENT THE FIRST TAB WILL HAVE YOUR OPEN PROJECTS */}
-							{user.userType == 'client'
+							{props.user.userType == 'client'
 								? projectsList
 										.filter((pr) => pr.lifeCycle === 'open')
 										.map((pr) => (
@@ -152,7 +160,7 @@ function ProjectsList({ projects, user }) {
 															Your Bid: $
 															{
 																pr.bids.filter(
-																	(bid) => bid.creatorId == user._id
+																	(bid) => bid.creatorId == props.user._id
 																)[0].bidPrice
 															}
 														</Typography>
@@ -180,7 +188,7 @@ function ProjectsList({ projects, user }) {
 							cols={1}
 						>
 							<ImageListItem key="Subheader" cols={1}></ImageListItem>
-							{user.userType == 'client'
+							{props.user.userType == 'client'
 								? projectsList
 										.filter((pr) => pr.lifeCycle === 'awarded')
 										.map((pr) => (
@@ -257,7 +265,7 @@ function ProjectsList({ projects, user }) {
 															Your Bid: $
 															{
 																pr.bids.filter(
-																	(bid) => bid.creatorId == user._id
+																	(bid) => bid.creatorId == props.user._id
 																)[0].bidPrice
 															}
 														</Typography>
@@ -276,11 +284,19 @@ function ProjectsList({ projects, user }) {
 //IMPORTANT FOR TABS TO WORK
 //The "children" prop of this function is passed down as "the thing between the TabPanel component"
 //Whatever is inside the tabpanels will not render without this
-
-function TabPanel(props) {
+// type TabPanelProps={
+// 	value: number,
+// 	index: number,
+// 	children: React.ReactNode
+// }
+// function TabPanel(props:TabPanelProps) {
+// 	// const { children, value, index } = props;
+// 	console.log(props);
+// 	return <>{props.value === props.index && <>{props.children}</>}</>;
+// }
+function TabPanel(props: any) {
 	const { children, value, index } = props;
 	console.log(props);
 	return <>{value === index && <>{children}</>}</>;
 }
-
 export default ProjectsList;

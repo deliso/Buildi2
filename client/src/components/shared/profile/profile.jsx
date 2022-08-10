@@ -19,8 +19,13 @@ import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
-
+// import { UserT } from '../../../../../types/userTypes';
+// type Props = {
+// 	user: UserT
+// };
+// function Profile(props: Props) {
 function Profile({ user }) {
+	// const { user } = props;
 	let { otherProfileId } = useParams();
 	const [otherProfile, setOtherProfile] = useState('someone else');
 	const [otherProfileAvgRating, setOtherProfileAvgRating] = useState(0);

@@ -31,13 +31,18 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import Rating from '@mui/material/Rating';
 import { deepPurple } from '@mui/material/colors';
-
+import { UserT } from '../../../../../../types/userTypes';
 import { Link } from 'react-router-dom';
-
-function ProjectDetails({ user }) {
+type Props = {
+	user: UserT;
+};
+type projectParams = {
+	projectId: string;
+};
+function ProjectDetails(props: Props) {
 	//FOR FORCED REFRESHES(CHEATING)
 	function refreshPage() {
-		window.location.reload(false);
+		window.location.reload();
 	}
 	useEffect(() => {
 		const getProject = async () => {
@@ -45,13 +50,14 @@ function ProjectDetails({ user }) {
 			setProject(project);
 		};
 		getProject();
+		console.log(project);
 	}, []);
 	//FOR MUI FORM DIALOG
 	const [rating, setRating] = React.useState(4);
 	const [open, setOpen] = React.useState(false);
 	let navigate = useNavigate();
 
-	const handleClickOpen = (e) => {
+	const handleClickOpen = () => {
 		setOpen(true);
 	};
 
@@ -59,16 +65,21 @@ function ProjectDetails({ user }) {
 		setOpen(false);
 	};
 
-	const submitHandlerRating = async (event) => {
+	const submitHandlerRating = async (
+		event: React.ChangeEvent<HTMLFormElement>
+	) => {
 		event.preventDefault();
+		const targetRating = event.target.rating as HTMLFormElement;
+		const targetReview = event.target.review as HTMLFormElement;
+
 		const bidderId = project.bids.filter((bid) => bid.awarded == true)[0]
 			.creatorId;
 		await leaveReview(
-			event.target.rating.value,
-			event.target.review.value,
-			user.firstName,
-			user.lastName,
-			user.profilePic,
+			targetRating.rating.value,
+			targetReview.review.value,
+			props.user.firstName,
+			props.user.lastName,
+			props.user.profilePic,
 			bidderId,
 			project._id
 		);
@@ -76,8 +87,29 @@ function ProjectDetails({ user }) {
 		// refreshPage();
 	};
 	//END
-	let { projectId } = useParams();
-	const [project, setProject] = useState(false);
+	// let { projectId } = useParams<{projectId!:string}>();
+	let { projectId } = useParams() as any;
+
+	const [project, setProject] = useState({
+		projectImage: '',
+		name: '',
+		description: '',
+		userId: '',
+		specialties: [],
+		lifeCycle: '',
+		bids: [
+			{
+				bidPrice: 0,
+				creatorId: '',
+				creatorName: '',
+				creatorPic: '',
+				awarded: false,
+				id: 0,
+			},
+		],
+		rfis: [],
+		_id: '',
+	});
 
 	return project ? (
 		<>
@@ -97,7 +129,8 @@ function ProjectDetails({ user }) {
 					<Typography variant="h6" component="div">
 						Projects
 					</Typography>
-					{project.lifeCycle === 'awarded' && user.userType === 'client' ? (
+					{project.lifeCycle === 'awarded' &&
+					props.user.userType === 'client' ? (
 						// ONLY SHOW THE COMPLETE PROJECT BUTTON ON THE APPBAR IF THE PROJECT IS IN THE "AWARDED" PHASE
 						<IconButton
 							size="large"
@@ -131,7 +164,7 @@ function ProjectDetails({ user }) {
 							value={rating}
 							precision={1}
 							onChange={(_, value) => {
-								setRating(value);
+								setRating(value!);
 							}}
 						/>
 						<TextField
@@ -270,12 +303,20 @@ function ProjectDetails({ user }) {
 				<Divider style={{ width: '85vw', margin: '2vw 0 0 0' }}></Divider>
 				{project.lifeCycle == 'open' ? (
 					<>
-						<BidList project={project} user={user} projectId={projectId} />
+						<BidList
+							project={project}
+							user={props.user}
+							projectId={projectId}
+						/>
 						<Divider
 							style={{ width: '85vw', margin: '2vw 0 0 0', height: '1vh' }}
 						></Divider>
 
-						<RFIList project={project} user={user} projectId={projectId} />
+						<RFIList
+							project={project}
+							user={props.user}
+							projectId={projectId}
+						/>
 					</>
 				) : (
 					<></>
