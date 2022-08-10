@@ -49,6 +49,7 @@ function ClientRegister(props) {
 				}}
 			>
 				<Typography
+					data-testid="client-reg-form"
 					variant="h4"
 					style={{ textAlign: 'center', color: 'white' }}
 				>
@@ -107,7 +108,7 @@ function ClientRegister(props) {
 						}}
 					>
 						Profile Picture
-						<input testId="profilePic" type="file" name="profilePic" hidden />
+						<input type="file" name="profilePic" hidden />
 					</Button>
 					<Button
 						type="submit"

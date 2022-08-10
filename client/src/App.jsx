@@ -31,6 +31,7 @@ function App() {
 	}, []);
 	return (
 		<>
+			<p data-testid="hello">Hello</p>
 			<Routes>
 				<Route
 					path="/"
