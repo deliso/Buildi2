@@ -59,7 +59,11 @@ const Login = (props: Props) => {
 						alignItems: 'center',
 					}}
 				>
-					<Typography variant="h3" style={{ color: 'white', fontWeight: 410 }}>
+					<Typography
+						data-testid="buildi"
+						variant="h3"
+						style={{ color: 'white', fontWeight: 410 }}
+					>
 						Buildi
 					</Typography>
 					<Typography
@@ -128,6 +132,7 @@ const Login = (props: Props) => {
 						or
 					</Typography>
 					<Button
+						data-testid="register-button"
 						variant="contained"
 						style={{
 							padding: '1vw 27vw 1vw 27vw',
