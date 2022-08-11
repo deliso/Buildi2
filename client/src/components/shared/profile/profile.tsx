@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getOtherProfile } from '../../../service/projectService';
@@ -19,15 +19,60 @@ import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
+import { UserT } from '../../../../../types/userTypes';
 // import { UserT } from '../../../../../types/userTypes';
-// type Props = {
-// 	user: UserT
-// };
-// function Profile(props: Props) {
-function Profile({ user }) {
-	// const { user } = props;
+type Props = {
+	user: UserT;
+};
+
+const initialOtherProfile: UserT = {
+	profilePic: '',
+	email: '',
+	password: '',
+	userType: '',
+	firstName: '',
+	lastName: '',
+	location: '',
+	specialties: [''],
+	reviews: [
+		{
+			rating: 0,
+			review: '',
+			creatorFirstName: '',
+			creatorLastName: '',
+			creatorPic: '',
+		},
+	],
+	_id: '',
+};
+
+function Profile(props: Props) {
+	const navigate = useNavigate();
+	const { user } = props;
 	let { otherProfileId } = useParams();
-	const [otherProfile, setOtherProfile] = useState('someone else');
+	const [otherProfile, setOtherProfile] = useState(
+		initialOtherProfile
+		// {
+		// profilePic: '',
+		// email: '',
+		// password: '',
+		// userType: '',
+		// firstName: '',
+		// lastName: '',
+		// location: '',
+		// specialties: [''],
+		// reviews: [
+		// 	{
+		// 		rating: 0,
+		// 		review: '',
+		// 		creatorFirstName: '',
+		// 		creatorLastName: '',
+		// 		creatorPic: '',
+		// 	},
+		// ],
+		// _id: '',
+		// }
+	);
 	const [otherProfileAvgRating, setOtherProfileAvgRating] = useState(0);
 	const [otherProfileNumRatings, setOtherProfileNumRatings] = useState(0);
 
@@ -36,10 +81,12 @@ function Profile({ user }) {
 
 	useEffect(() => {
 		const getAnotherUsersProfile = async () => {
-			const profile = await getOtherProfile(otherProfileId);
-			setOtherProfile(profile);
+			if (otherProfileId) {
+				const profile = await getOtherProfile(otherProfileId);
+				setOtherProfile(profile);
+			}
 		};
-		if (user == 'viewingOtherProfile') {
+		if (user._id !== otherProfileId) {
 			getAnotherUsersProfile();
 		}
 		return;
@@ -62,12 +109,12 @@ function Profile({ user }) {
 		<>
 			<AppBar>
 				<Toolbar>
-					{user !== 'viewingOtherProfile' ? (
+					{user._id === otherProfileId ? (
 						<>
 							<Typography
 								variant="h6"
 								component="div"
-								onClick={() => window.location.reload(false)}
+								onClick={() => window.location.reload()}
 							>
 								Your Profile
 							</Typography>
@@ -81,8 +128,7 @@ function Profile({ user }) {
 								color="inherit"
 								aria-label="open drawer"
 								sx={{ mr: 2 }}
-								component={Link}
-								to={-1}
+								onClick={() => navigate(-1)}
 							>
 								<ArrowBackIcon />
 							</IconButton>
@@ -92,7 +138,7 @@ function Profile({ user }) {
 						</>
 					)}
 
-					{user !== 'viewingOtherProfile' ? (
+					{user._id !== otherProfileId ? (
 						<>
 							<Typography
 								variant="h6"
@@ -113,7 +159,7 @@ function Profile({ user }) {
 					)}
 				</Toolbar>
 			</AppBar>
-			{user != 'viewingOtherProfile' ? (
+			{user._id === otherProfileId ? (
 				<>
 					<Box
 						sx={{

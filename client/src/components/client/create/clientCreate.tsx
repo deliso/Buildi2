@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getProjects } from '../../../service/projectService';
 //MUI IMPORTS
 import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
+import { Theme, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -19,6 +19,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import { UserT } from '../../../../../types/userTypes';
+import { ProjectT } from '../../../../../types/projectTypes';
 
 //FOR MUI
 
@@ -49,7 +51,12 @@ const specialties = [
 	'Exteriors',
 ];
 
-function getStyles(name, personName, theme) {
+type Props = {
+	user: UserT;
+	setProjects: React.Dispatch<React.SetStateAction<ProjectT[]>>;
+};
+
+function getStyles(name: string, personName: string[], theme: Theme) {
 	return {
 		fontWeight:
 			personName.indexOf(name) === -1
@@ -61,14 +68,15 @@ function getStyles(name, personName, theme) {
 const paperStyle = { padding: '30px 20px', width: 300, margin: '20px auto' };
 const headerStyle = { margin: 10 };
 //END FOR MUI
-function ClientCreate({ user, setProjects }) {
+function ClientCreate(props: Props) {
+	const { user, setProjects } = props;
 	React.useEffect(() => {
 		handleClickOpen();
 	}, []);
 	//FOR MUI FORM DIALOG
 	const [open, setOpen] = React.useState(false);
 
-	const handleClickOpen = (e) => {
+	const handleClickOpen = () => {
 		setOpen(true);
 	};
 
@@ -83,7 +91,7 @@ function ClientCreate({ user, setProjects }) {
 	const theme = useTheme();
 	const [specialtyName, setSpecialtyName] = React.useState([]);
 
-	const handleChangeMUI = (event) => {
+	const handleChangeMUI: any = (event: React.ChangeEvent<HTMLFormElement>) => {
 		const {
 			target: { value },
 		} = event;
@@ -93,17 +101,17 @@ function ClientCreate({ user, setProjects }) {
 		);
 	};
 	//END FOR MUI
-	const submitHandler = async (event) => {
+	const submitHandler = async (event: React.ChangeEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		console.log('here');
 
 		const formData = new FormData(event.target);
 		formData.append('_id', user._id);
-		await createProject(formData, user._id);
+		await createProject(formData);
 		//REFRESH STATE OF PROJECTS NAV
 		await getProjects().then((projects) => {
 			const filteredProjects = projects.filter(
-				(pr) => pr.lifeCycle !== 'closed'
+				(pr: ProjectT) => pr.lifeCycle !== 'closed'
 			);
 			setProjects(filteredProjects);
 		});

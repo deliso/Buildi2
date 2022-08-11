@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { register } from '../../service/projectService';
 import auth from '../../utils/auth';
 //MUI IMPORTS
-import { useTheme } from '@mui/material/styles';
+import { Theme, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -46,7 +46,7 @@ const specialties = [
 	'Exteriors',
 ];
 
-function getStyles(name, personName, theme) {
+function getStyles(name: string, personName: string[], theme: Theme) {
 	return {
 		fontWeight:
 			personName.indexOf(name) === -1
@@ -55,12 +55,17 @@ function getStyles(name, personName, theme) {
 	};
 }
 
-function ContractorRegister(props) {
+type Props = {
+	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function ContractorRegister(props: Props) {
+	const { setIsAuthenticated } = props;
 	//FOR MUI
 	const theme = useTheme();
 	const [specialtyName, setSpecialtyName] = React.useState([]);
 
-	const handleChangeMUI = (event) => {
+	const handleChangeMUI: any = (event: React.ChangeEvent<HTMLFormElement>) => {
 		const {
 			target: { value },
 		} = event;
@@ -69,7 +74,7 @@ function ContractorRegister(props) {
 	//END FOR MUI
 	const navigate = useNavigate();
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		formData.append('userType', 'contractor');
@@ -77,7 +82,7 @@ function ContractorRegister(props) {
 		if (res.error) {
 			alert(`${res.message}`);
 		} else {
-			props.setIsAuthenticated(true);
+			setIsAuthenticated(true);
 			auth.login(() => {
 				navigate('../contractor/profile');
 			});
@@ -220,8 +225,7 @@ function ContractorRegister(props) {
 					bottom: '2vh',
 					left: '10vw',
 				}}
-				component={Link}
-				to={-1}
+				onClick={() => navigate(-1)}
 			>
 				<ChevronLeftIcon />
 			</Fab>

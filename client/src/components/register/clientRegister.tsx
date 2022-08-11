@@ -13,21 +13,26 @@ import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
-function ClientRegister(props) {
-	const navigate = useNavigate();
+type Props = {
+	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-	const handleSubmit = async (e) => {
+function ClientRegister(props: Props) {
+	const navigate = useNavigate();
+	const { setIsAuthenticated } = props;
+
+	const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		formData.append('userType', 'client');
-		formData.append('specialties', null);
+		formData.append('specialties', '');
 
 		const res = await register(formData);
 
 		if (res.error) {
 			alert(`${res.message}`);
 		} else {
-			props.setIsAuthenticated(true);
+			setIsAuthenticated(true);
 			auth.login(() => {
 				navigate('../client/profile');
 			});
@@ -140,8 +145,7 @@ function ClientRegister(props) {
 					bottom: '5vh',
 					left: '10vw',
 				}}
-				component={Link}
-				to={-1}
+				onClick={() => navigate(-1)}
 			>
 				<ChevronLeftIcon />
 			</Fab>

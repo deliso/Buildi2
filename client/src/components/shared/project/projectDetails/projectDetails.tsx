@@ -33,8 +33,10 @@ import Rating from '@mui/material/Rating';
 import { deepPurple } from '@mui/material/colors';
 import { UserT } from '../../../../../../types/userTypes';
 import { Link } from 'react-router-dom';
+import { ProjectT } from '../../../../../../types/projectTypes';
 type Props = {
 	user: UserT;
+	setProjects: React.Dispatch<React.SetStateAction<ProjectT[]>>;
 };
 type projectParams = {
 	projectId: string;

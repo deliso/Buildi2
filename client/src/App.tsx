@@ -16,15 +16,43 @@ import ContractorRegister from './components/register/contractorRegister';
 //SERVICE AND UTILITIES IMPORTS
 import { getProjects } from './service/projectService';
 import auth from './utils/auth';
+import { ProjectT } from '../../types/projectTypes';
+
+const initialProject = {
+	name: '',
+	description: '',
+	userId: '',
+	specialties: [''],
+	lifeCycle: '',
+	bids: [
+		{
+			bidPrice: 0,
+			creatorId: '',
+			creatorName: '',
+			creatorPic: '',
+			awarded: false,
+		},
+	],
+	rfis: [
+		{
+			question: '',
+			response: '',
+			creatorId: '',
+			creatorPic: '',
+			_id: '',
+		},
+	],
+	_id: '',
+};
 
 function App() {
 	const initialState = auth.isAuthenticated();
 	const [isAuthenticated, setIsAuthenticated] = useState(initialState);
-	const [projects, setProjects] = useState([]);
+	const [projects, setProjects] = useState([initialProject]);
 	useEffect(() => {
 		getProjects().then((projects) => {
 			const filteredProjects = projects.filter(
-				(pr) => pr.lifeCycle !== 'closed'
+				(pr: ProjectT) => pr.lifeCycle !== 'closed'
 			);
 			setProjects(filteredProjects);
 		});
