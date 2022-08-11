@@ -30,7 +30,7 @@ const testProject = {
 	projectImage: '',
 	name: 'Test Project',
 	description: 'Test Project description',
-	userId: '', //Pending
+	userId: '',
 	specialties: [],
 	lifeCycle: 'open',
 	bids: [],
@@ -84,7 +84,7 @@ describe('Create and retrieve projects', () => {
 		mongoose.connection.close();
 	});
 
-	it('should save a project in the database', (done) => {
+	it('should save project in the database', (done) => {
 		agent
 			.post('/create')
 			.set('Accept', 'application/json')
