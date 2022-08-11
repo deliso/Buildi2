@@ -23,7 +23,7 @@ describe('test app', () => {
 	});
 
 	it('can input the registration details', () => {
-		cy.get('[data-testid="client-reg-email"]').type('fake8@email.com');
+		cy.get('[data-testid="client-reg-email"]').type('fake8git @email.com');
 		cy.get('[data-testid="client-reg-password"]').type('test_password');
 		cy.get('[data-testid="client-reg-firstname"]').type('Testio');
 		cy.get('[data-testid="client-reg-lastname"]').type('Testales');
