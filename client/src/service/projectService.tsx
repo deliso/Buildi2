@@ -230,7 +230,9 @@ export const profile = async () => {
 };
 
 //retrieve another users profile for viewing without effecting auth
-export const getOtherProfile = async (id: any) => {
+export const getOtherProfile: (id: string) => Promise<UserT> = async (
+	id: string
+) => {
 	try {
 		const result = await fetch(baseURL + `/otherprofile?id=${id}`);
 		return await result.json();

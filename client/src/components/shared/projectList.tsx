@@ -14,6 +14,7 @@ import { ProjectT } from '../../../../types/projectTypes';
 type Props = {
 	user: UserT;
 	projects: ProjectT[];
+	setProjects: React.Dispatch<React.SetStateAction<ProjectT[]>>;
 };
 function ProjectsList(props: Props) {
 	const { user, projects } = props;

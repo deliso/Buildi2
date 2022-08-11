@@ -1,11 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-function Register() {
+
+type Props = {
+	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function Register(props: Props) {
+	const navigate = useNavigate();
 	return (
 		<>
 			<Box
@@ -90,8 +96,7 @@ function Register() {
 						bottom: '5vh',
 						left: '16vw',
 					}}
-					component={Link}
-					to={-1}
+					onClick={() => navigate(-1)}
 				>
 					<ChevronLeftIcon />
 					Login
