@@ -65,3 +65,9 @@ npm start
 ## Author
 
 Matt D'Agostino - [Github](https://github.com/mattdags982) - [LinkedIn](https://www.linkedin.com/in/matthewgregorydagostino)
+
+## Contributors
+
+Bernat Kenji Pavon - [Github](https://github.com/pewomba) - [LinkedIn](https://www.linkedin.com/in/bernat-kenji-pavon/)
+<br/>
+Sergio Morales López - [Github](https://github.com/deliso) - [LinkedIn](https://www.linkedin.com/in/smoraleslopez/)
