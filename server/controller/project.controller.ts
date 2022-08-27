@@ -3,7 +3,7 @@
 import { Request, Response } from 'express';
 import Project from '../model/project.model';
 import User from '../model/user.model';
-import { Review, UserT } from '../../types/userTypes';
+import { ReviewT, UserT } from '../../types/userTypes';
 import { BidT, RFIT, ProjectT } from '../../types/projectTypes';
 
 declare module 'express-session' {

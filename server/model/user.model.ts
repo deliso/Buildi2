@@ -1,10 +1,10 @@
 // const mongoose = require("./index");
 import mongoose, { model } from 'mongoose';
-import { Review, UserT } from '../../types/userTypes';
+import { ReviewT, UserT } from '../../types/userTypes';
 
 const { Schema } = mongoose;
 
-const reviewSchema = new Schema<Review>({
+const reviewSchema = new Schema<ReviewT>({
 	rating: Number,
 	review: String,
 	creatorFirstName: String,
