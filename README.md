@@ -68,6 +68,6 @@ Matt D'Agostino - [Github](https://github.com/mattdags982) - [LinkedIn](https://
 
 ## Contributors
 
-Bernat Kenji Pavon - [Github](https://github.com/pewomba) - [LinkedIn](https://www.linkedin.com/in/bernat-kenji-pavon/)
+Bernat Kenji Pavon - [Github](https://github.com/pewompa) - [LinkedIn](https://www.linkedin.com/in/bernat-kenji-pavon/)
 <br/>
 Sergio Morales López - [Github](https://github.com/deliso) - [LinkedIn](https://www.linkedin.com/in/smoraleslopez/)
